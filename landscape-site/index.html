@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-field-entry-cover-status="booting" data-field-entry-layout="landscape">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const logicalWidth = 390;
+        const logicalHeight = 844;
+
+        const applyBootFrame = () => {
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const scale = Math.min(
+            viewportWidth / logicalWidth,
+            viewportHeight / logicalHeight,
+          );
+          const left = Math.floor(
+            (viewportWidth - logicalWidth * scale) / 2,
+          );
+          const top = Math.floor(
+            (viewportHeight - logicalHeight * scale) / 2,
+          );
+
+          root.style.setProperty('--field-entry-boot-scale', String(scale));
+          root.style.setProperty('--field-entry-boot-left', `${left}px`);
+          root.style.setProperty('--field-entry-boot-top', `${top}px`);
+        };
+
+        const stopBootFrame = () => {
+          window.removeEventListener('resize', applyBootFrame);
+          window.visualViewport?.removeEventListener('resize', applyBootFrame);
+          observer.disconnect();
+        };
+
+        const observer = new MutationObserver(() => {
+          if (root.dataset.fieldEntryCoverStatus === 'ready') {
+            stopBootFrame();
+          }
+        });
+
+        applyBootFrame();
+        window.addEventListener('resize', applyBootFrame, { passive: true });
+        window.visualViewport?.addEventListener(
+          'resize',
+          applyBootFrame,
+          { passive: true },
+        );
+        observer.observe(root, {
+          attributes: true,
+          attributeFilter: ['data-field-entry-cover-status'],
+        });
+      })();
+    </script>
+    <link
+      rel="preload"
+      as="image"
+      href="/field-miner-landscape-simple-guide-v01/assets/field-entry-webgl-poster-s0-v01-1x-CbfCpdkB.png"
+      imagesrcset="/field-miner-landscape-simple-guide-v01/assets/field-entry-webgl-poster-s0-v01-1x-CbfCpdkB.png 1x, /field-miner-landscape-simple-guide-v01/assets/field-entry-webgl-poster-s0-v01-2x-BccopZV-.png 2x"
+      imagesizes="390px"
+    >
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/field-miner-landscape-simple-guide-v01/assets/source-han-sans-cn-light-300-site-v2-CGbBaqr5.woff2"
+      crossorigin
+    >
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/field-miner-landscape-simple-guide-v01/assets/source-han-sans-cn-normal-350-site-v2-q2bwJcox.woff2"
+      crossorigin
+    >
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/field-miner-landscape-simple-guide-v01/assets/source-han-sans-cn-medium-500-site-v2-4XvtPrsE.woff2"
+      crossorigin
+    >
+    <link rel="icon" href="data:,">
+    <script>
+      globalThis.process = Object.freeze({
+        env: Object.freeze({ NODE_ENV: 'production' }),
+      });
+    </script>
+
+    <title>Field Miner Landscape Cover Preview</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@use-gesture/vanilla": "./vendor/use-gesture-vanilla.esm.js",
+          "@use-gesture/core": "./vendor/use-gesture-core/dist/use-gesture-core.esm.js",
+          "@use-gesture/core/actions": "./vendor/use-gesture-core/actions/dist/use-gesture-core-actions.esm.js",
+          "@use-gesture/core/utils": "./vendor/use-gesture-core/utils/dist/use-gesture-core-utils.esm.js",
+          "@use-gesture/core/types": "./vendor/use-gesture-core/types/dist/use-gesture-core-types.esm.js"
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="/field-miner-landscape-simple-guide-v01/assets/entry-60BD_MiP.js"></script>
+    <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/field-frame-fit-Sh8AhLlk.js">
+    <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/field-inner-landscape-authority-DMOjs_-2.js">
+    <link rel="stylesheet" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/entry-CgDsVVl6.css">
+  </head>
+  <body>
+    <div id="app" data-field-frame-host data-field-entry-handoff>
+      <section
+        data-field-entry-inner-host
+        aria-label="Field Miner Inner"
+        aria-hidden="true"
+        inert
+      >
+        <div data-field-entry-inner-stage>
+          <iframe
+            title="Field Miner Inner"
+            data-field-entry-inner-page
+            data-field-entry-plain-src="./field-inner-cover-preview.html?layout=landscape"
+            data-field-entry-guide-src="./field-first-use-narrative-layout-trial-v01.html?sequence=1&amp;entry=1&amp;handoff=1&amp;layout=landscape"
+          ></iframe>
+        </div>
+      </section>
+
+      <section
+        data-field-entry-flight-host
+        aria-hidden="true"
+        inert
+      >
+        <div data-field-entry-flight-stage>
+          <img
+            data-field-entry-flight-shuttle
+            src="/field-miner-landscape-simple-guide-v01/assets/field-entry-flight-s16-rgba-v01-1x.png"
+            srcset="/field-miner-landscape-simple-guide-v01/assets/field-entry-flight-s16-rgba-v01-1x.png 624w, /field-miner-landscape-simple-guide-v01/assets/field-entry-flight-s16-rgba-v01-2x.png 1248w, /field-miner-landscape-simple-guide-v01/assets/field-entry-flight-s16-rgba-v01-2p5x.png 1560w"
+            sizes="624px"
+            width="390"
+            height="844"
+            decoding="async"
+            draggable="false"
+            alt=""
+          >
+        </div>
+      </section>
+
+      <section
+        data-field-entry-cover-host
+        aria-label="Field Miner Entry"
+      >
+        <a
+          id="field-entry-cover-preview"
+          href="./field-inner-cover-preview.html?layout=landscape"
+          aria-label="Enter Field Miner"
+          data-field-entry-exit-link
+          data-field-frame-stage
+        >
+          <div data-field-entry-motion-stage>
+            <img
+              data-field-entry-cover-poster
+              src="/field-miner-landscape-simple-guide-v01/assets/field-entry-webgl-poster-s0-v01-1x-CbfCpdkB.png"
+              srcset="/field-miner-landscape-simple-guide-v01/assets/field-entry-webgl-poster-s0-v01-1x-CbfCpdkB.png 1x, /field-miner-landscape-simple-guide-v01/assets/field-entry-webgl-poster-s0-v01-2x-BccopZV-.png 2x"
+              width="390"
+              height="844"
+              decoding="async"
+              fetchpriority="high"
+              draggable="false"
+              alt=""
+            >
+            <canvas id="matrix"></canvas>
+            <header class="field-entry-copy">
+              <p class="field-entry-kicker">FIELD MINER / ACTION SOLVER</p>
+              <h1>看穿正在发生的，<br>推动值得发生的。</h1>
+              <p class="field-entry-summary">一个关于“如何观察外部变化”的模拟世界。</p>
+            </header>
+            <span class="field-entry-enter" aria-hidden="true">
+              <span>ENTER</span>
+              <small>进入 FIELD MINER</small>
+            </span>
+            <span class="field-entry-gesture" aria-hidden="true">DRAG TO ROTATE</span>
+          </div>
+        </a>
+      </section>
+    </div>
+  </body>
+</html>

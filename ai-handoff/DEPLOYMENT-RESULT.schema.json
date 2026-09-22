@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lea:field-miner:deployment-result:1",
+  "title": "Field Miner deployment result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contractVersion",
+    "handoffSha256",
+    "status",
+    "operator",
+    "target",
+    "releases",
+    "failures",
+    "rollback",
+    "attestation",
+    "notes"
+  ],
+  "properties": {
+    "$schema": { "const": "./DEPLOYMENT-RESULT.schema.json" },
+    "contractVersion": { "const": "1.0.0" },
+    "handoffSha256": { "$ref": "#/$defs/sha256" },
+    "status": { "enum": ["PENDING", "PASS", "FAIL", "BLOCKED"] },
+    "operator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "toolVersion"],
+      "properties": {
+        "kind": { "enum": ["AI_AGENT", "HUMAN", "HYBRID"] },
+        "name": { "type": ["string", "null"] },
+        "toolVersion": { "type": ["string", "null"] }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "project", "stagingBaseUrl", "productionBaseUrl"],
+      "properties": {
+        "provider": { "type": ["string", "null"] },
+        "project": { "type": ["string", "null"] },
+        "stagingBaseUrl": { "type": ["string", "null"] },
+        "productionBaseUrl": { "type": ["string", "null"] }
+      }
+    },
+    "releases": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id"],
+            "properties": { "id": { "const": "portrait-v10" } }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id"],
+            "properties": { "id": { "const": "landscape-v05" } }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "archiveSha256",
+          "deployedBaseUrl",
+          "preflightStatus",
+          "remoteBytesStatus",
+          "browserSmokeStatus",
+          "evidence"
+        ],
+        "properties": {
+          "id": { "enum": ["portrait-v10", "landscape-v05"] },
+          "archiveSha256": { "$ref": "#/$defs/sha256" },
+          "deployedBaseUrl": { "type": ["string", "null"] },
+          "preflightStatus": { "$ref": "#/$defs/checkStatus" },
+          "remoteBytesStatus": { "$ref": "#/$defs/checkStatus" },
+          "browserSmokeStatus": { "$ref": "#/$defs/checkStatus" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "code", "message", "evidence"],
+        "properties": {
+          "stage": { "type": "string", "minLength": 1 },
+          "code": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 },
+          "evidence": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "performed", "result", "previousVersion"],
+      "properties": {
+        "required": { "type": ["boolean", "null"] },
+        "performed": { "type": ["boolean", "null"] },
+        "result": { "$ref": "#/$defs/checkStatus" },
+        "previousVersion": { "type": ["string", "null"] }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noRebuild",
+        "noByteMutation",
+        "exactPublicPrefixes",
+        "serviceWorkerUploadedLast",
+        "exactStagingVersionPromoted"
+      ],
+      "properties": {
+        "noRebuild": { "type": ["boolean", "null"] },
+        "noByteMutation": { "type": ["boolean", "null"] },
+        "exactPublicPrefixes": { "type": ["boolean", "null"] },
+        "serviceWorkerUploadedLast": { "type": ["boolean", "null"] },
+        "exactStagingVersionPromoted": { "type": ["boolean", "null"] }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "PASS" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "properties": {
+              "provider": { "type": "string", "minLength": 1 },
+              "project": { "type": "string", "minLength": 1 },
+              "stagingBaseUrl": { "type": "string", "pattern": "^https://" },
+              "productionBaseUrl": { "type": "string", "pattern": "^https://" }
+            }
+          },
+          "releases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "deployedBaseUrl": { "type": "string", "pattern": "^https://" },
+                "preflightStatus": { "const": "PASS" },
+                "remoteBytesStatus": { "const": "PASS" },
+                "browserSmokeStatus": { "const": "PASS" },
+                "evidence": { "type": "array", "minItems": 1 }
+              }
+            }
+          },
+          "failures": { "type": "array", "maxItems": 0 },
+          "attestation": {
+            "type": "object",
+            "properties": {
+              "noRebuild": { "const": true },
+              "noByteMutation": { "const": true },
+              "exactPublicPrefixes": { "const": true },
+              "serviceWorkerUploadedLast": { "const": true },
+              "exactStagingVersionPromoted": { "const": true }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "enum": ["FAIL", "BLOCKED"] } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": { "failures": { "type": "array", "minItems": 1 } }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9A-F]{64}$" },
+    "checkStatus": { "enum": ["PENDING", "PASS", "FAIL", "BLOCKED", "NOT_APPLICABLE"] }
+  }
+}

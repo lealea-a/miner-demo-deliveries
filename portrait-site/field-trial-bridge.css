@@ -1,0 +1,202 @@
+.fm-phi-sheet__trial-cta {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #BAF759;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  appearance: none;
+}
+
+.fm-phi-sheet.is-bridge-covered {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: none;
+}
+
+.fm-phi-sheet.is-bridge-covered::backdrop,
+.fm-phi-sheet.is-bridge-covered[open]::backdrop {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: none;
+}
+
+.trial-bridge {
+  position: fixed;
+  inset: 0 auto auto 0;
+  box-sizing: border-box;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.trial-bridge[open]:not([data-positioned]) {
+  visibility: hidden;
+}
+
+.trial-bridge::backdrop {
+  background: rgb(0 0 0 / 32%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.trial-bridge__surface {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgb(243 242 238 / 12%);
+  border-radius: 14px;
+  background: #000;
+}
+
+.trial-bridge__surface > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.trial-bridge__surface[hidden],
+.trial-bridge__qr-view[hidden] {
+  display: none;
+}
+
+.trial-bridge__connect {
+  position: absolute;
+  left: 12.769231%;
+  top: 75.144138%;
+  width: 74.461537%;
+  height: 5.752718%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.trial-bridge__connect:focus-visible {
+  outline: 2px solid #BAF759;
+  outline-offset: 2px;
+}
+
+.trial-bridge__return {
+  position: absolute;
+  left: 5.128205%;
+  top: 1.024984%;
+  width: 26.666667%;
+  height: 5.637412%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgb(243 242 238 / 72%);
+  font-family:
+    "SourceHanSansCN-ExtraLight-GBpc-EUC-H",
+    "Source Han Sans SC",
+    sans-serif;
+  font-size: 12px;
+  font-weight: 200;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trial-bridge__return:hover,
+.trial-bridge__return:focus-visible {
+  color: #f3f2ee;
+}
+
+.trial-bridge__return:focus-visible {
+  outline: 2px solid #BAF759;
+  outline-offset: 2px;
+}
+
+.trial-bridge__qr-view {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  justify-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  border: 1px solid rgb(243 242 238 / 12%);
+  border-radius: 14px;
+  background: #000;
+  color: #f3f2ee;
+  font-family:
+    "SourceHanSansCN-ExtraLight-GBpc-EUC-H",
+    "Source Han Sans SC",
+    sans-serif;
+  font-weight: 200;
+}
+
+.trial-bridge__qr-view h2,
+.trial-bridge__qr-view p {
+  margin: 0;
+  text-align: center;
+}
+
+.trial-bridge__qr-view h2 {
+  color: #BAF759;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 24px;
+}
+
+.trial-bridge__qr-view p {
+  margin-top: 8px;
+  color: rgb(243 242 238 / 72%);
+  font-size: 12px;
+  font-weight: 200;
+  line-height: 18px;
+}
+
+.trial-bridge__qr-placeholder {
+  align-self: center;
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  width: var(--trial-qr-size);
+  height: var(--trial-qr-size);
+  background: #fff;
+  color: #000;
+  text-align: center;
+}
+
+.trial-bridge__qr-placeholder > span {
+  font-size: 48px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.trial-bridge__qr-placeholder > small {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+
+.trial-bridge__qr-return {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #BAF759;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.trial-bridge__qr-return:focus-visible {
+  outline: 2px solid #BAF759;
+  outline-offset: 4px;
+}

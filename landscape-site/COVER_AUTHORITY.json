@@ -1,0 +1,18 @@
+{
+  "contractId": "FIELD_LANDSCAPE_COVER_V01",
+  "authority": "design-experiments/field-miner-landscape-cover-v01/",
+  "parityReport": "design-experiments/field-miner-landscape-cover-v01/evidence/parity-report.json",
+  "parityPass": true,
+  "entryModule": "src/main.js",
+  "frameFitter": "field-frame-fit.js",
+  "sourceSha256": {
+    "index.html": "1E8CF8E6CF96D5A6C04B255B7B5C794F96799735B52204231DBDA5EDC43B4B3B",
+    "cover-preview.css": "8C236B5363577556CCC34302F9C1A273E42A35C21CC3607C615FC5E38FDB0B62",
+    "src/main.js": "22E6B6AC678D961B22D895B7D5BC208330C4B062FA149828D3B602660595B6B0",
+    "field-frame-fit.js": "33A8AF20A0904034485110B0CEBDDFE1FB6DA3B975172283445DF28C431998AF",
+    "src/styles.css": "D3D3C00D28BE3A40F694826D6B45B68B56A8C2A71CA57EA7971589EC93E246E2",
+    "assets/field-entry-webgl-poster-s0-v01-1x.png": "601D2649E157EC6ECE5625EABA94911F7D59F96665E3CF2C8C9B34054E265EDE",
+    "assets/field-entry-webgl-poster-s0-v01-2x.png": "9A42E88E5CA05168451148A340C28747E80F1B141BA6D4AEF3EEE4C982B6D841"
+  },
+  "fallback": false
+}

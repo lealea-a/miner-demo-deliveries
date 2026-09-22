@@ -1,0 +1,103 @@
+[data-field-entry-handoff] {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+[data-field-entry-inner-host],
+[data-field-entry-cover-host] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+[data-field-entry-inner-host] {
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-field-entry-cover-host] {
+  z-index: 1;
+  background: #000;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+[data-field-entry-flight-host] {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  background: transparent;
+}
+
+[data-field-entry-flight-stage] {
+  position: absolute;
+  width: 390px;
+  height: 844px;
+  pointer-events: none;
+}
+
+[data-field-entry-flight-shuttle] {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 390px;
+  height: 844px;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  user-select: none;
+}
+
+[data-field-entry-inner-stage] {
+  position: absolute;
+  width: 390px;
+  height: 844px;
+}
+
+[data-field-entry-inner-page] {
+  display: block;
+  width: 390px;
+  height: 844px;
+  border: 0;
+}
+
+[data-field-entry-motion-stage] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
+
+[data-field-entry-cover-poster] {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+  background: transparent;
+}
+
+html:not([data-field-entry-cover-status="ready"]) #matrix {
+  visibility: hidden;
+}
+
+html[data-field-entry-cover-status="ready"]
+[data-field-entry-cover-poster] {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-field-entry-motion-stage] {
+    transform: none;
+  }
+}

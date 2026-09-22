@@ -1,0 +1,47 @@
+.fm-domain-slider__viewport {
+  position: absolute;
+  left: 0;
+  top: 724px;
+  z-index: 4;
+  width: 390px;
+  height: 65px;
+  overflow: hidden;
+  cursor: grab;
+  outline: none;
+}
+
+.fm-domain-slider__viewport:active {
+  cursor: grabbing;
+}
+
+.fm-domain-slider__viewport:focus-visible {
+  outline: 1px solid rgb(186 247 89 / 70%);
+  outline-offset: -1px;
+}
+
+.fm-domain-slider__container {
+  display: flex;
+  height: 100%;
+  touch-action: pan-y pinch-zoom;
+}
+
+.fm-domain-slider__option {
+  flex: 0 0 65px;
+  min-width: 0;
+  height: 100%;
+  color: transparent;
+  user-select: none;
+}
+
+.fm-domain-slider__selection-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

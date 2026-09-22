@@ -1,0 +1,38 @@
+{
+  "$schema": "./DEPLOYMENT-RESULT.schema.json",
+  "contractVersion": "1.0.0",
+  "handoffSha256": "69B7A6035AAA53F4C48AA61F92B6AFD08305C8AA3A5CADDF9B2032707822BA10",
+  "status": "PENDING",
+  "operator": { "kind": "AI_AGENT", "name": null, "toolVersion": null },
+  "target": { "provider": null, "project": null, "stagingBaseUrl": null, "productionBaseUrl": null },
+  "releases": [
+    {
+      "id": "portrait-v10",
+      "archiveSha256": "C78F06DF9E284ECCE589736EFD9481121439D2722006E6584C03646F705071CB",
+      "deployedBaseUrl": null,
+      "preflightStatus": "PENDING",
+      "remoteBytesStatus": "PENDING",
+      "browserSmokeStatus": "PENDING",
+      "evidence": []
+    },
+    {
+      "id": "landscape-v05",
+      "archiveSha256": "4D3BE9FAC1CF0CA05D693C62237EA343330F1A8CC375CF696433A0267CDA2E82",
+      "deployedBaseUrl": null,
+      "preflightStatus": "PENDING",
+      "remoteBytesStatus": "PENDING",
+      "browserSmokeStatus": "PENDING",
+      "evidence": []
+    }
+  ],
+  "failures": [],
+  "rollback": { "required": null, "performed": null, "result": "PENDING", "previousVersion": null },
+  "attestation": {
+    "noRebuild": null,
+    "noByteMutation": null,
+    "exactPublicPrefixes": null,
+    "serviceWorkerUploadedLast": null,
+    "exactStagingVersionPromoted": null
+  },
+  "notes": []
+}

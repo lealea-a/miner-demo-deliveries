@@ -1,0 +1,1739 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link
+    rel="stylesheet"
+    href="./fonts/field-inner-global-v11/field-inner-fonts.css"
+  >
+  <link
+    rel="stylesheet"
+    href="./field-first-use-narrative-layout-trial-v01.css"
+  >
+  <title>Field First-use Narrative Layout Trial</title>
+</head>
+<body data-field-frame-host>
+  <main
+    class="fm-first-use-trial"
+    data-field-frame-stage
+    data-field-first-use-trial
+  >
+    <iframe
+      class="fm-first-use-trial__page"
+      src="./field-inner-cover-preview.html"
+      title="Field Miner 真实内页"
+      data-field-first-use-page
+    ></iframe>
+
+    <svg
+      class="fm-first-use-trial__spotlight"
+      viewBox="0 0 390 844"
+      aria-hidden="true"
+      data-field-first-use-spotlight
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        data-field-first-use-spotlight-path
+      ></path>
+    </svg>
+
+    <section
+      class="fm-first-use-card"
+      aria-live="off"
+      data-field-first-use-card
+    >
+      <p data-field-first-use-copy></p>
+    </section>
+
+    <button
+      class="fm-first-use-skip"
+      type="button"
+      aria-label="跳过首次说明"
+      data-field-first-use-skip
+      disabled
+      aria-hidden="true"
+    >跳过</button>
+  </main>
+
+  <pre
+    class="fm-first-use-trial__status"
+    data-field-first-use-status
+    hidden
+  ></pre>
+
+  <script type="module">
+    import {
+      FIELD_FRAME_HEIGHT,
+      FIELD_FRAME_WIDTH,
+      mountFieldFrame,
+    } from './field-frame-fit.js';
+
+    const CARD_WIDTH = 192;
+    const CARD_HEIGHT = 72;
+    const CARD_GUTTER = 20;
+    const CARD_GAP = 12;
+    const SPOTLIGHT_PADDING = 10;
+    const SPOTLIGHT_RADIUS = 5;
+    const EXPECTED_CARD_TOP = 356;
+    const GEOMETRY_EPSILON = 0.5;
+    const SEQUENCE_DWELL_MS = 2000;
+    const STORAGE_KEY =
+      'field-miner:first-use-narrative:v1:shown';
+    const SKIP_SIZE = 44;
+    const SKIP_TOP = 16;
+    const SKIP_RIGHT_INSET = 16;
+    const SKIP_LEFT =
+      FIELD_FRAME_WIDTH - SKIP_RIGHT_INSET - SKIP_SIZE;
+    const FONT_FAMILY =
+      '"FieldFirstUseSourceHanSansCN-Light"';
+
+    const STEPS = Object.freeze({
+      1: Object.freeze({
+        root: 12,
+        label: '当前有效资金',
+        copy: '一笔巨额资金，\n不等于趋势。',
+      }),
+      2: Object.freeze({
+        root: 13,
+        label: '独立事件链',
+        copy: '十次传播，\n未必是一条事件链。',
+      }),
+      3: Object.freeze({
+        root: 17,
+        label: '政策汇合',
+        copy: '没有后续，\n信号就会衰减。',
+      }),
+    });
+
+    const stage = document.querySelector(
+      '[data-field-first-use-trial]'
+    );
+    const page = document.querySelector(
+      '[data-field-first-use-page]'
+    );
+    const card = document.querySelector(
+      '[data-field-first-use-card]'
+    );
+    const copy = document.querySelector(
+      '[data-field-first-use-copy]'
+    );
+    const spotlight = document.querySelector(
+      '[data-field-first-use-spotlight]'
+    );
+    const spotlightPath = document.querySelector(
+      '[data-field-first-use-spotlight-path]'
+    );
+    const skip = document.querySelector(
+      '[data-field-first-use-skip]'
+    );
+    const status = document.querySelector(
+      '[data-field-first-use-status]'
+    );
+
+    let handoffState = 'PREPARING';
+    let handoffMode = 'none';
+    let handoffParsedMode = null;
+    let handoffPreparedSteps = null;
+    let handoffQualification = null;
+    let handoffContentPromise = null;
+    const handoffAudit = {
+      version: 1,
+      events: [],
+      backdrop: null,
+      error: null,
+    };
+
+    function setHandoffState(nextState) {
+      handoffState = nextState;
+      handoffAudit.events.push(Object.freeze({
+        state: nextState,
+        now: performance.now(),
+      }));
+      document.documentElement.dataset.fieldFirstUseHandoffState =
+        nextState.toLowerCase();
+    }
+
+    function fatal(message) {
+      document.documentElement.dataset.trialStatus = 'error';
+      status.hidden = false;
+      status.textContent = message;
+      throw new Error(message);
+    }
+
+    function requireElement(value, name) {
+      if (!(value instanceof Element)) {
+        fatal(`FIELD_FIRST_USE_${name}_MISSING`);
+      }
+
+      return value;
+    }
+
+    function clamp(value, minimum, maximum) {
+      return Math.min(Math.max(value, minimum), maximum);
+    }
+
+    function roundedSpotlightPath(rect) {
+      const left = clamp(
+        rect.left - SPOTLIGHT_PADDING,
+        0,
+        FIELD_FRAME_WIDTH
+      );
+      const top = clamp(
+        rect.top - SPOTLIGHT_PADDING,
+        0,
+        FIELD_FRAME_HEIGHT
+      );
+      const right = clamp(
+        rect.right + SPOTLIGHT_PADDING,
+        0,
+        FIELD_FRAME_WIDTH
+      );
+      const bottom = clamp(
+        rect.bottom + SPOTLIGHT_PADDING,
+        0,
+        FIELD_FRAME_HEIGHT
+      );
+      const radius = Math.min(
+        SPOTLIGHT_RADIUS,
+        (right - left) / 2,
+        (bottom - top) / 2
+      );
+
+      return [
+        `M0 0H${FIELD_FRAME_WIDTH}V${FIELD_FRAME_HEIGHT}H0Z`,
+        `M${left + radius} ${top}`,
+        `H${right - radius}`,
+        `Q${right} ${top} ${right} ${top + radius}`,
+        `V${bottom - radius}`,
+        `Q${right} ${bottom} ${right - radius} ${bottom}`,
+        `H${left + radius}`,
+        `Q${left} ${bottom} ${left} ${bottom - radius}`,
+        `V${top + radius}`,
+        `Q${left} ${top} ${left + radius} ${top}Z`,
+      ].join(' ');
+    }
+
+    function readLogicalTargetRect(target, innerSurface) {
+      const targetRect = target.getBoundingClientRect();
+      const surfaceRect = innerSurface.getBoundingClientRect();
+      const scaleX = surfaceRect.width / FIELD_FRAME_WIDTH;
+      const scaleY = surfaceRect.height / FIELD_FRAME_HEIGHT;
+
+      if (
+        !Number.isFinite(scaleX) ||
+        !Number.isFinite(scaleY) ||
+        scaleX <= 0 ||
+        scaleY <= 0
+      ) {
+        fatal('FIELD_FIRST_USE_INNER_FRAME_GEOMETRY_INVALID');
+      }
+
+      return Object.freeze({
+        left: (targetRect.left - surfaceRect.left) / scaleX,
+        top: (targetRect.top - surfaceRect.top) / scaleY,
+        right: (targetRect.right - surfaceRect.left) / scaleX,
+        bottom: (targetRect.bottom - surfaceRect.top) / scaleY,
+        width: targetRect.width / scaleX,
+        height: targetRect.height / scaleY,
+      });
+    }
+
+    function waitForInnerReady() {
+      const expectedSource = page.getAttribute('src');
+
+      if (!expectedSource) {
+        return Promise.reject(
+          new Error('FIELD_FIRST_USE_PAGE_SOURCE_MISSING')
+        );
+      }
+
+      const expectedUrl = new URL(expectedSource, location.href).href;
+
+      return new Promise((resolve, reject) => {
+        let observer = null;
+        let pageHideWindow = null;
+        let finished = false;
+
+        function stop() {
+          observer?.disconnect();
+          observer = null;
+          page.removeEventListener('load', inspect);
+          page.removeEventListener('error', handleLoadError);
+          pageHideWindow?.removeEventListener(
+            'pagehide',
+            handlePageHide
+          );
+          pageHideWindow = null;
+        }
+
+        function finish(callback, value) {
+          if (finished) return;
+          finished = true;
+          stop();
+          callback(value);
+        }
+
+        function handleLoadError() {
+          finish(
+            reject,
+            new Error('FIELD_FIRST_USE_PAGE_LOAD_FAILED')
+          );
+        }
+
+        function handlePageHide() {
+          observer?.disconnect();
+          observer = null;
+          pageHideWindow?.removeEventListener(
+            'pagehide',
+            handlePageHide
+          );
+          pageHideWindow = null;
+        }
+
+        function inspect() {
+          try {
+            const innerDocument = page.contentDocument;
+            const innerWindow = page.contentWindow;
+            const innerRoot = innerDocument?.documentElement;
+
+            if (
+              !innerDocument
+              || !innerWindow
+              || innerDocument.readyState !== 'complete'
+              || innerDocument.URL !== expectedUrl
+              || !(innerRoot instanceof innerWindow.Element)
+              || innerDocument !== page.contentDocument
+            ) {
+              return;
+            }
+
+            observer?.disconnect();
+            pageHideWindow?.removeEventListener(
+              'pagehide',
+              handlePageHide
+            );
+            pageHideWindow = innerWindow;
+            pageHideWindow.addEventListener(
+              'pagehide',
+              handlePageHide,
+              { once: true }
+            );
+
+            function settleObservedPreviewStatus() {
+              try {
+                if (
+                  page.contentDocument !== innerDocument
+                  || innerDocument.documentElement !== innerRoot
+                  || innerDocument.defaultView !== innerWindow
+                  || !innerRoot.isConnected
+                ) {
+                  finish(
+                    reject,
+                    new DOMException(
+                      'FIELD_FIRST_USE_INNER_NAVIGATED_DURING_READINESS',
+                      'InvalidStateError'
+                    )
+                  );
+                  return;
+                }
+
+                const nextStatus = innerRoot.dataset.previewStatus;
+
+                if (nextStatus === 'ready') {
+                  finish(resolve, innerDocument);
+                } else if (nextStatus === 'error') {
+                  finish(
+                    reject,
+                    new Error('FIELD_FIRST_USE_INNER_PAGE_FAILED')
+                  );
+                }
+              } catch (cause) {
+                finish(
+                  reject,
+                  new Error('FIELD_FIRST_USE_INNER_INSPECT_FAILED', {
+                    cause,
+                  })
+                );
+              }
+            }
+
+            observer = new innerWindow.MutationObserver(
+              settleObservedPreviewStatus
+            );
+
+            if (
+              page.contentDocument !== innerDocument
+              || innerDocument.documentElement !== innerRoot
+              || innerDocument.defaultView !== innerWindow
+              || !innerRoot.isConnected
+            ) {
+              return;
+            }
+
+            observer.observe(innerRoot, {
+              attributes: true,
+              attributeFilter: ['data-preview-status'],
+            });
+            settleObservedPreviewStatus();
+          } catch (cause) {
+            finish(
+              reject,
+              new Error('FIELD_FIRST_USE_INNER_INSPECT_FAILED', {
+                cause,
+              })
+            );
+          }
+        }
+
+        page.addEventListener('load', inspect);
+        page.addEventListener('error', handleLoadError, { once: true });
+        inspect();
+      });
+    }
+
+    function assertCurrentInnerDocument(
+      innerDocument,
+      innerWindow,
+      code,
+    ) {
+      if (
+        page.contentDocument !== innerDocument
+        || innerDocument.defaultView !== innerWindow
+      ) {
+        throw new DOMException(code, 'InvalidStateError');
+      }
+    }
+
+    function parseMode() {
+      const parameters = new URLSearchParams(location.search);
+      const hasStep = parameters.has('step');
+      const hasSequence = parameters.has('sequence');
+      const replayValues = parameters.getAll('replay');
+
+      if (
+        replayValues.length > 1
+        || (
+          replayValues.length === 1
+          && replayValues[0] !== '1'
+        )
+      ) {
+        fatal('FIELD_FIRST_USE_REPLAY_MODE_INVALID');
+      }
+
+      const replay = replayValues[0] === '1';
+
+      if (hasStep === hasSequence) {
+        fatal('FIELD_FIRST_USE_MODE_INVALID');
+      }
+
+      if (hasStep) {
+        if (replay) {
+          fatal('FIELD_FIRST_USE_REPLAY_REQUIRES_SEQUENCE');
+        }
+
+        const stepKey = parameters.get('step');
+
+        if (!STEPS[stepKey]) {
+          fatal('FIELD_FIRST_USE_STEP_INVALID');
+        }
+
+        return Object.freeze({ type: 'step', stepKey });
+      }
+
+      if (parameters.get('sequence') !== '1') {
+        fatal('FIELD_FIRST_USE_SEQUENCE_INVALID');
+      }
+
+      const entry = parameters.get('entry');
+      const handoff = parameters.get('handoff') === '1';
+
+      if (
+        replay
+        && (
+          entry !== '1'
+          || !handoff
+        )
+      ) {
+        fatal('FIELD_FIRST_USE_REPLAY_CONTRACT_INVALID');
+      }
+
+      return Object.freeze({
+        type: 'sequence',
+        entry,
+        handoff,
+        replay,
+      });
+    }
+
+    function storageAvailable(type) {
+      let storage;
+
+      try {
+        storage = window[type];
+        const probe = '__storage_test__';
+        storage.setItem(probe, probe);
+        storage.removeItem(probe);
+        return true;
+      } catch (error) {
+        return (
+          error instanceof DOMException &&
+          error.name === 'QuotaExceededError' &&
+          storage &&
+          storage.length !== 0
+        );
+      }
+    }
+
+    function resolveEntryQualification(mode) {
+      const eligible =
+        mode.type === 'sequence' && mode.entry === '1';
+
+      if (!eligible) {
+        return Object.freeze({
+          eligible: false,
+          shouldRun: false,
+          shouldBypass: false,
+          storage: null,
+          persistShown: false,
+          replay: false,
+          bypassReason: null,
+        });
+      }
+
+      const replay =
+        eligible
+        && mode.handoff
+        && mode.replay;
+
+      if (replay) {
+        return Object.freeze({
+          eligible: true,
+          shouldRun: true,
+          shouldBypass: false,
+          storage: null,
+          persistShown: false,
+          replay: true,
+          bypassReason: null,
+        });
+      }
+
+      if (!storageAvailable('localStorage')) {
+        return Object.freeze({
+          eligible: true,
+          shouldRun: false,
+          shouldBypass: true,
+          storage: null,
+          persistShown: false,
+          replay: false,
+          bypassReason: 'bypassed-storage-unavailable',
+        });
+      }
+
+      try {
+        const storage = window.localStorage;
+        const alreadyShown = storage.getItem(STORAGE_KEY) === '1';
+
+        return Object.freeze({
+          eligible: true,
+          shouldRun: !alreadyShown,
+          shouldBypass: alreadyShown,
+          storage,
+          persistShown: !alreadyShown,
+          replay: false,
+          bypassReason: alreadyShown ? 'bypassed' : null,
+        });
+      } catch {
+        return Object.freeze({
+          eligible: true,
+          shouldRun: false,
+          shouldBypass: true,
+          storage: null,
+          persistShown: false,
+          replay: false,
+          bypassReason: 'bypassed-storage-unavailable',
+        });
+      }
+    }
+
+    function createInterruptibleDwell() {
+      let completed = false;
+      let resolveDwell;
+      const timeout = setTimeout(() => {
+        if (!completed) {
+          completed = true;
+          resolveDwell('elapsed');
+        }
+      }, SEQUENCE_DWELL_MS);
+      const promise = new Promise(resolve => {
+        resolveDwell = resolve;
+      });
+
+      return Object.freeze({
+        promise,
+        interrupt() {
+          if (completed) {
+            return;
+          }
+
+          completed = true;
+          clearTimeout(timeout);
+          resolveDwell('interrupted');
+        },
+      });
+    }
+
+    const activeTransitionWaits = new WeakMap();
+    let transitionGeneration = 0;
+
+    function parseCssTime(value) {
+      const token = value.trim().toLowerCase();
+
+      if (token.endsWith('ms')) {
+        return Number.parseFloat(token);
+      }
+
+      if (token.endsWith('s')) {
+        return Number.parseFloat(token) * 1000;
+      }
+
+      return 0;
+    }
+
+    function opacityTransitionDeclaredMs(element) {
+      const ownerWindow = element.ownerDocument.defaultView;
+      const computed = ownerWindow.getComputedStyle(element);
+      const properties = computed.transitionProperty
+        .split(',')
+        .map(value => value.trim().toLowerCase());
+      const durations = computed.transitionDuration
+        .split(',')
+        .map(parseCssTime);
+      const delays = computed.transitionDelay
+        .split(',')
+        .map(parseCssTime);
+      const itemCount = Math.max(
+        properties.length,
+        durations.length,
+        delays.length
+      );
+      let maximum = 0;
+
+      for (let index = 0; index < itemCount; index += 1) {
+        const property = properties[index % properties.length];
+
+        if (property !== 'opacity' && property !== 'all') {
+          continue;
+        }
+
+        maximum = Math.max(
+          maximum,
+          durations[index % durations.length]
+            + delays[index % delays.length]
+        );
+      }
+
+      return maximum;
+    }
+
+    const TRANSITION_ENDPOINT_EPSILON = 0.001;
+    const TRANSITION_SUCCESS_OUTCOMES = new Set([
+      'ended',
+      'already-ended',
+      'reduced-motion',
+      'no-transition',
+    ]);
+
+    function isSuccessfulTransitionOutcome(outcome) {
+      return TRANSITION_SUCCESS_OUTCOMES.has(outcome);
+    }
+
+    function opacityMatchesEndpoint(element, expectedOpacity) {
+      const ownerWindow = element.ownerDocument.defaultView;
+      const opacity = Number.parseFloat(
+        ownerWindow.getComputedStyle(element).opacity
+      );
+
+      return (
+        Number.isFinite(opacity)
+        && Math.abs(opacity - expectedOpacity)
+          <= TRANSITION_ENDPOINT_EPSILON
+      );
+    }
+
+    function waitForOpacityTransition(
+      element,
+      reducedMotion,
+      onStart,
+      expectedOpacity
+    ) {
+      if (expectedOpacity !== 0 && expectedOpacity !== 1) {
+        throw new Error('FIELD_FIRST_USE_EXPECTED_OPACITY_INVALID');
+      }
+
+      const previous = activeTransitionWaits.get(element);
+      previous?.settle('cancelled');
+
+      const generation = ++transitionGeneration;
+      let started = false;
+      let settled = false;
+      let endpointFrame = null;
+      let resolveOutcome;
+
+      function matches(event) {
+        return (
+          event.target === element &&
+          event.propertyName === 'opacity'
+        );
+      }
+
+      function startOnce() {
+        if (started) {
+          return;
+        }
+
+        started = true;
+        onStart();
+      }
+
+      function cleanup() {
+        element.removeEventListener('transitionstart', handleStart);
+        element.removeEventListener('transitioncancel', handleCancel);
+        const ownerWindow = element.ownerDocument.defaultView;
+        if (endpointFrame !== null) {
+          ownerWindow.cancelAnimationFrame(endpointFrame);
+          endpointFrame = null;
+        }
+        if (activeTransitionWaits.get(element)?.generation === generation) {
+          activeTransitionWaits.delete(element);
+        }
+      }
+
+      function settle(outcome) {
+        if (settled) {
+          return;
+        }
+
+        settled = true;
+        startOnce();
+        cleanup();
+        resolveOutcome(outcome);
+      }
+
+      function handleStart(event) {
+        if (!matches(event)) {
+          return;
+        }
+
+        startOnce();
+      }
+
+      function handleCancel(event) {
+        if (!matches(event)) {
+          return;
+        }
+
+        settle('cancelled');
+      }
+
+      const promise = new Promise(resolve => {
+        resolveOutcome = resolve;
+      });
+      activeTransitionWaits.set(element, {
+        generation,
+        settle,
+      });
+
+      if (reducedMotion) {
+        settle('reduced-motion');
+        return promise;
+      }
+
+      element.addEventListener('transitionstart', handleStart);
+      element.addEventListener('transitioncancel', handleCancel);
+      const ownerWindow = element.ownerDocument.defaultView;
+      ownerWindow.queueMicrotask(() => {
+        if (settled) return;
+        const declaredMs = opacityTransitionDeclaredMs(element);
+        const OwnerCSSTransition = ownerWindow.CSSTransition;
+
+        if (typeof OwnerCSSTransition !== 'function') {
+          settle('unsupported');
+          return;
+        }
+
+        const opacityTransition = element
+          .getAnimations()
+          .find(animation =>
+            animation instanceof OwnerCSSTransition
+            && animation.transitionProperty === 'opacity'
+          );
+
+        if (!opacityTransition) {
+          const endpointReached =
+            opacityMatchesEndpoint(element, expectedOpacity);
+
+          if (endpointReached) {
+            settle(declaredMs > 0 ? 'already-ended' : 'no-transition');
+            return;
+          }
+
+          settle(declaredMs > 0 ? 'not-created' : 'endpoint-mismatch');
+          return;
+        }
+
+        opacityTransition.finished.then(
+          () => {
+            endpointFrame = ownerWindow.requestAnimationFrame(() => {
+              endpointFrame = null;
+              settle(
+                opacityMatchesEndpoint(element, expectedOpacity)
+                  ? 'ended'
+                  : 'endpoint-mismatch'
+              );
+            });
+          },
+          error => {
+            settle(
+              error?.name === 'AbortError'
+                ? 'cancelled'
+                : 'runtime-error'
+            );
+          }
+        );
+      });
+
+      return promise;
+    }
+
+    function clearHandoffTransitionProperties() {
+      spotlight.style.removeProperty('--fm-handoff-delay');
+      spotlight.style.removeProperty('--fm-handoff-duration');
+      spotlight.style.removeProperty('--fm-handoff-easing');
+    }
+
+    function clearHandoffVisuals({ clearPath = false } = {}) {
+      activeTransitionWaits.get(spotlight)?.settle('cancelled');
+      activeTransitionWaits.get(card)?.settle('cancelled');
+      activeTransitionWaits.get(skip)?.settle('cancelled');
+      delete spotlight.dataset.handoffOpen;
+      delete spotlight.dataset.open;
+      delete card.dataset.open;
+      delete skip.dataset.open;
+      delete skip.dataset.interactive;
+      clearHandoffTransitionProperties();
+      skip.disabled = true;
+      skip.setAttribute('aria-hidden', 'true');
+
+      if (clearPath) {
+        spotlightPath.removeAttribute('d');
+      }
+    }
+
+    async function preopenHandoffBackdrop({
+      delayMs,
+      durationMs,
+      easing,
+    }) {
+      if (handoffState !== 'ARMED') {
+        throw new DOMException(
+          `FIELD_FIRST_USE_HANDOFF_INVALID_STATE:${handoffState}`,
+          'InvalidStateError'
+        );
+      }
+
+      if (
+        !Number.isFinite(delayMs) || delayMs < 0 ||
+        !Number.isFinite(durationMs) || durationMs <= 0 ||
+        typeof easing !== 'string' || easing.length === 0
+      ) {
+        throw new Error('FIELD_FIRST_USE_HANDOFF_TIMING_INVALID');
+      }
+
+      setHandoffState('BACKDROP_ENTERING');
+      spotlight.style.setProperty('--fm-handoff-delay', `${delayMs}ms`);
+      spotlight.style.setProperty(
+        '--fm-handoff-duration',
+        `${durationMs}ms`
+      );
+      spotlight.style.setProperty('--fm-handoff-easing', easing);
+      void spotlight.offsetHeight;
+
+      const startedAt = performance.now();
+      spotlight.dataset.handoffOpen = 'true';
+      const transition = waitForOpacityTransition(
+        spotlight,
+        false,
+        () => {
+          handoffAudit.events.push(Object.freeze({
+            state: 'BACKDROP_TRANSITION_START',
+            now: performance.now(),
+          }));
+        },
+        1
+      );
+      const outcome = await transition;
+
+      if (!isSuccessfulTransitionOutcome(outcome)) {
+        throw new Error(
+          `FIELD_FIRST_USE_SPOTLIGHT_PREOPEN_FAILED:${outcome}`
+        );
+      }
+
+      handoffAudit.backdrop = Object.freeze({
+        delayMs,
+        durationMs,
+        easing,
+        startedAt,
+        readyAt: performance.now(),
+        outcome,
+      });
+      setHandoffState('BACKDROP_READY');
+      return handoffAudit.backdrop;
+    }
+
+    function resetHandoffBackdrop() {
+      clearHandoffVisuals({ clearPath: true });
+      setHandoffState('RESET');
+      document.documentElement.dataset.fieldFirstUseHandoffStatus =
+        'reset';
+    }
+
+    function failOpenHandoff(error) {
+      handoffAudit.error = String(
+        error instanceof Error ? error.message : error
+      );
+      clearHandoffVisuals({ clearPath: true });
+      stage.dataset.contentReady = 'true';
+      stage.dataset.sequenceEnded = 'error-open';
+      document.documentElement.dataset.sequenceStatus = 'error-open';
+      document.documentElement.dataset.trialStatus = 'ready';
+      setHandoffState('ERROR_OPEN');
+      document.documentElement.dataset.fieldFirstUseHandoffStatus =
+        'error-open';
+      page.focus({ preventScroll: true });
+    }
+
+    function getHandoffAudit() {
+      return Object.freeze({
+        version: handoffAudit.version,
+        state: handoffState,
+        mode: handoffMode,
+        replay: Boolean(handoffParsedMode?.replay),
+        backdrop: handoffAudit.backdrop,
+        error: handoffAudit.error,
+        events: Object.freeze([...handoffAudit.events]),
+      });
+    }
+
+    async function prepareStep(
+      stepKey,
+      innerDocument,
+      innerWindow,
+      innerSurface
+    ) {
+      const step = STEPS[stepKey];
+      const loadedFaces = await document.fonts.load(
+        `300 18px ${FONT_FAMILY}`,
+        step.copy
+      );
+
+      if (loadedFaces.length !== 1) {
+        fatal(`FIELD_FIRST_USE_FONT_LOAD_${stepKey}_FAILED`);
+      }
+
+      const target = innerDocument.querySelector(
+        `[data-authored-root="${step.root}"]`
+      );
+
+      if (!(target instanceof innerWindow.SVGElement)) {
+        fatal(`FIELD_FIRST_USE_ROOT_${step.root}_MISSING`);
+      }
+
+      const targetText = target.textContent
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (!targetText.includes(step.label)) {
+        fatal(`FIELD_FIRST_USE_ROOT_${step.root}_LABEL_MISMATCH`);
+      }
+
+      const targetRect = readLogicalTargetRect(
+        target,
+        innerSurface
+      );
+      const targetCenterX =
+        targetRect.left + targetRect.width / 2;
+      const cardX = clamp(
+        targetCenterX - CARD_WIDTH / 2,
+        CARD_GUTTER,
+        FIELD_FRAME_WIDTH - CARD_GUTTER - CARD_WIDTH
+      );
+      const cardY =
+        4 * Math.ceil((targetRect.bottom + CARD_GAP) / 4);
+
+      if (Math.abs(cardY - EXPECTED_CARD_TOP) > GEOMETRY_EPSILON) {
+        fatal(
+          `FIELD_FIRST_USE_CARD_TOP_FAILED:` +
+          `${cardY}/${EXPECTED_CARD_TOP}`
+        );
+      }
+
+      return Object.freeze({
+        stepKey,
+        step,
+        targetRect,
+        cardX,
+        cardY,
+      });
+    }
+
+    function renderStep(preparedStep) {
+      const { stepKey, step, targetRect, cardX, cardY } =
+        preparedStep;
+
+      stage.dataset.step = stepKey;
+      stage.dataset.authoredRoot = String(step.root);
+      copy.textContent = step.copy;
+      card.style.left = `${cardX}px`;
+      card.style.top = `${cardY}px`;
+      spotlightPath.setAttribute(
+        'd',
+        roundedSpotlightPath(targetRect)
+      );
+    }
+
+    function publishStepAudit(preparedStep) {
+      const { stepKey, step, targetRect } = preparedStep;
+      const cardRect = card.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const stageScale = stageRect.width / FIELD_FRAME_WIDTH;
+      const computed = getComputedStyle(copy);
+      const spotlightComputed = getComputedStyle(spotlight);
+      const spotlightAlphaToken = spotlightComputed
+        .getPropertyValue('--fm-first-use-spotlight-alpha')
+        .trim();
+      const spotlightAlpha = Number.parseFloat(
+        spotlightAlphaToken
+      );
+
+      if (
+        !Number.isFinite(spotlightAlpha) ||
+        spotlightAlpha < 0 ||
+        spotlightAlpha > 1
+      ) {
+        fatal('FIELD_FIRST_USE_SPOTLIGHT_ALPHA_INVALID');
+      }
+
+      window.__FIELD_FIRST_USE_NARRATIVE_LAYOUT_TRIAL__ =
+        Object.freeze({
+          step: Number(stepKey),
+          authoredRoot: step.root,
+          targetLabel: step.label,
+          targetRect,
+          cardLogicalRect: Object.freeze({
+            x: (cardRect.left - stageRect.left) / stageScale,
+            y: (cardRect.top - stageRect.top) / stageScale,
+            width: cardRect.width / stageScale,
+            height: cardRect.height / stageScale,
+          }),
+          computedFont: Object.freeze({
+            family: computed.fontFamily,
+            weight: computed.fontWeight,
+            size: computed.fontSize,
+            lineHeight: computed.lineHeight,
+            letterSpacing: computed.letterSpacing,
+          }),
+          spotlight: Object.freeze({
+            overlayOpacity: spotlightAlpha,
+            padding: SPOTLIGHT_PADDING,
+            radius: SPOTLIGHT_RADIUS,
+          }),
+        });
+    }
+
+    async function runSequence(
+      preparedSteps,
+      qualification,
+      {
+        spotlightPreopened = false,
+        onActive = () => {},
+      } = {}
+    ) {
+      const reducedMotion = matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+      const dismissible = qualification.shouldRun;
+      const sequenceAudit = {
+        reducedMotion,
+        replay: qualification.replay,
+        persistShown: qualification.persistShown,
+        dwellMs: SEQUENCE_DWELL_MS,
+        startedAt: null,
+        completedAt: null,
+        totalDuration: null,
+        exitRequestedAt: null,
+        releasedAt: null,
+        exitReason: null,
+        storageWriteFailed: false,
+        events: [],
+        spotlightEvents: [],
+        transitionOutcomes: [],
+        releaseTransitionFailures: [],
+      };
+      let activeDwell = null;
+      let activePhase = 'preparing';
+      let requestedExit = null;
+      let finalized = false;
+
+      function record(type, stepKey) {
+        const now = performance.now();
+
+        if (sequenceAudit.startedAt === null) {
+          sequenceAudit.startedAt = now;
+        }
+
+        sequenceAudit.events.push(Object.freeze({
+          type,
+          step: Number(stepKey),
+          now,
+          relative: now - sequenceAudit.startedAt,
+        }));
+      }
+
+      function recordSpotlight(type) {
+        const now = performance.now();
+
+        if (sequenceAudit.startedAt === null) {
+          sequenceAudit.startedAt = now;
+        }
+
+        sequenceAudit.spotlightEvents.push(Object.freeze({
+          type,
+          now,
+          relative: now - sequenceAudit.startedAt,
+        }));
+      }
+
+      window.__FIELD_FIRST_USE_SEQUENCE__ = sequenceAudit;
+      document.documentElement.dataset.sequenceStatus = 'running';
+      document.documentElement.dataset.trialStatus = 'ready';
+
+      function recordOutcome(target, phase, stepKey, outcome) {
+        sequenceAudit.transitionOutcomes.push(Object.freeze({
+          target,
+          phase,
+          step: Number(stepKey),
+          outcome,
+          now: performance.now(),
+        }));
+        return outcome;
+      }
+
+      function finalizeRelease(reason) {
+        if (finalized) {
+          return;
+        }
+
+        finalized = true;
+        activeDwell?.interrupt();
+        activeDwell = null;
+        delete card.dataset.open;
+        delete spotlight.dataset.open;
+        delete spotlight.dataset.handoffOpen;
+        delete skip.dataset.open;
+        delete skip.dataset.interactive;
+        clearHandoffTransitionProperties();
+        skip.disabled = true;
+        skip.setAttribute('aria-hidden', 'true');
+        skip.removeEventListener('click', handleSkip);
+        document.removeEventListener('keydown', handleKeydown);
+        spotlightPath.removeAttribute('d');
+        sequenceAudit.completedAt = performance.now();
+        sequenceAudit.totalDuration =
+          sequenceAudit.startedAt === null
+            ? 0
+            : sequenceAudit.completedAt - sequenceAudit.startedAt;
+        sequenceAudit.releasedAt = sequenceAudit.completedAt;
+        sequenceAudit.exitReason = reason;
+        document.documentElement.dataset.sequenceStatus = reason;
+        stage.dataset.sequenceEnded = reason;
+        delete stage.dataset.phase;
+        activePhase = 'ended';
+        page.focus({ preventScroll: true });
+
+        if (
+          qualification.persistShown
+          && dismissible
+          && (reason === 'complete' || reason === 'skipped')
+        ) {
+          try {
+            qualification.storage?.setItem(STORAGE_KEY, '1');
+          } catch {
+            sequenceAudit.storageWriteFailed = true;
+          }
+        }
+      }
+
+      function requestExit(reason) {
+        if (
+          !dismissible ||
+          activePhase !== 'dwell' ||
+          requestedExit !== null
+        ) {
+          return false;
+        }
+
+        requestedExit = reason;
+        sequenceAudit.exitRequestedAt = performance.now();
+        delete skip.dataset.interactive;
+        skip.disabled = true;
+        skip.setAttribute('aria-hidden', 'true');
+        activeDwell?.interrupt();
+        return true;
+      }
+
+      function handleSkip() {
+        requestExit('skipped');
+      }
+
+      function handleKeydown(event) {
+        if (event.key === 'Escape' && requestExit('skipped')) {
+          event.preventDefault();
+        }
+      }
+
+      skip.addEventListener('click', handleSkip);
+      document.addEventListener('keydown', handleKeydown);
+
+      async function exitNarrative(reason, preparedStep) {
+        activePhase = 'exiting';
+        stage.dataset.phase = 'exiting';
+        delete skip.dataset.interactive;
+        skip.disabled = true;
+        skip.setAttribute('aria-hidden', 'true');
+
+        const exited = waitForOpacityTransition(
+          card,
+          reducedMotion,
+          () => record('exiting', preparedStep.stepKey),
+          0
+        ).then(outcome => {
+          return recordOutcome(
+            'card',
+            'exit',
+            preparedStep.stepKey,
+            outcome
+          );
+        });
+        const spotlightExited = waitForOpacityTransition(
+          spotlight,
+          spotlightPreopened ? false : reducedMotion,
+          () => recordSpotlight('exiting'),
+          0
+        ).then(outcome => {
+          return recordOutcome(
+            'spotlight',
+            'exit',
+            preparedStep.stepKey,
+            outcome
+          );
+        });
+        const skipExited = dismissible
+          ? waitForOpacityTransition(
+              skip,
+              reducedMotion,
+              () => {},
+              0
+            ).then(outcome => recordOutcome(
+              'skip',
+              'exit',
+              preparedStep.stepKey,
+              outcome
+            ))
+          : Promise.resolve('no-transition');
+
+        delete card.dataset.open;
+        if (spotlightPreopened) {
+          delete spotlight.dataset.handoffOpen;
+        } else {
+          delete spotlight.dataset.open;
+        }
+        delete skip.dataset.open;
+
+        const exitOutcomes = await Promise.all([
+          exited,
+          spotlightExited,
+          skipExited,
+        ]);
+        const exitTargets = ['card', 'spotlight', 'skip'];
+
+        const releaseTransitionFailures = exitOutcomes.flatMap(
+          (outcome, index) => {
+            if (isSuccessfulTransitionOutcome(outcome)) {
+              return [];
+            }
+
+            return [Object.freeze({
+              target: exitTargets[index],
+              outcome,
+              step: Number(preparedStep.stepKey),
+              reason,
+              now: performance.now(),
+            })];
+          }
+        );
+
+        sequenceAudit.releaseTransitionFailures.push(
+          ...releaseTransitionFailures
+        );
+
+        record('exited', preparedStep.stepKey);
+        recordSpotlight('exited');
+        finalizeRelease(reason);
+      }
+
+      for (const [index, preparedStep] of preparedSteps.entries()) {
+        const firstStep = index === 0;
+        const lastStep = index === preparedSteps.length - 1;
+
+        renderStep(preparedStep);
+        void card.offsetHeight;
+
+        if (firstStep) {
+          void spotlight.offsetHeight;
+        }
+
+        const entered = waitForOpacityTransition(
+          card,
+          reducedMotion,
+          () => record('entering', preparedStep.stepKey),
+          1
+        ).then(outcome => {
+          return recordOutcome(
+            'card',
+            'enter',
+            preparedStep.stepKey,
+            outcome
+          );
+        });
+
+        const spotlightEntered = firstStep && !spotlightPreopened
+          ? waitForOpacityTransition(
+              spotlight,
+              reducedMotion,
+              () => recordSpotlight('entering'),
+              1
+            ).then(outcome => {
+              return recordOutcome(
+                'spotlight',
+                'enter',
+                preparedStep.stepKey,
+                outcome
+              );
+            })
+          : Promise.resolve('no-transition');
+        const skipEntered = firstStep && dismissible
+          ? waitForOpacityTransition(
+              skip,
+              reducedMotion,
+              () => {},
+              1
+            ).then(outcome => recordOutcome(
+              'skip',
+              'enter',
+              preparedStep.stepKey,
+              outcome
+            ))
+          : Promise.resolve('no-transition');
+
+        card.dataset.open = 'true';
+
+        if (firstStep) {
+          if (!spotlightPreopened) {
+            spotlight.dataset.open = 'true';
+          }
+          if (dismissible) {
+            skip.dataset.open = 'true';
+          }
+          stage.dataset.contentReady = 'true';
+        }
+
+        const enterOutcomes = await Promise.all([
+          entered,
+          spotlightEntered,
+          skipEntered,
+        ]);
+
+        const enterTargets = ['CARD', 'SPOTLIGHT', 'SKIP'];
+        const failedEnterIndex = enterOutcomes.findIndex(
+          outcome => !isSuccessfulTransitionOutcome(outcome)
+        );
+
+        if (failedEnterIndex >= 0) {
+          finalizeRelease('runtime-error');
+          const failedTarget = enterTargets[failedEnterIndex];
+          const failedOutcome = enterOutcomes[failedEnterIndex];
+          const legacyCancellation = failedOutcome === 'cancelled'
+            ? failedTarget === 'SPOTLIGHT'
+              ? ':FIELD_FIRST_USE_SPOTLIGHT_TRANSITION_CANCELLED'
+              : failedTarget === 'CARD'
+                ? ':FIELD_FIRST_USE_TRANSITION_CANCELLED'
+                : ':FIELD_FIRST_USE_SKIP_TRANSITION_CANCELLED'
+            : '';
+          throw new Error(
+            `FIELD_FIRST_USE_${failedTarget}`
+            + `_ENTER_FAILED:${failedOutcome}${legacyCancellation}`
+          );
+        }
+
+        await new Promise(resolve => {
+          requestAnimationFrame(() => resolve());
+        });
+
+        if (!opacityMatchesEndpoint(card, 1)) {
+          finalizeRelease('runtime-error');
+          throw new Error(
+            'FIELD_FIRST_USE_CARD_ENTER_FAILED:endpoint-mismatch'
+          );
+        }
+
+        if (
+          firstStep
+          && !spotlightPreopened
+          && !opacityMatchesEndpoint(spotlight, 1)
+        ) {
+          finalizeRelease('runtime-error');
+          throw new Error(
+            'FIELD_FIRST_USE_SPOTLIGHT_ENTER_FAILED:endpoint-mismatch'
+          );
+        }
+
+        record('entered', preparedStep.stepKey);
+        if (firstStep) {
+          recordSpotlight('entered');
+          onActive();
+        }
+        publishStepAudit(preparedStep);
+
+        if (firstStep && dismissible) {
+          skip.disabled = false;
+          skip.setAttribute('aria-hidden', 'false');
+        }
+
+        activePhase = 'dwell';
+        stage.dataset.phase = 'dwell';
+        if (dismissible) {
+          skip.dataset.interactive = 'true';
+        }
+
+        activeDwell = createInterruptibleDwell();
+        await activeDwell.promise;
+        activeDwell = null;
+        delete skip.dataset.interactive;
+
+        if (requestedExit !== null) {
+          await exitNarrative(requestedExit, preparedStep);
+          return;
+        }
+
+        if (lastStep) {
+          await exitNarrative('complete', preparedStep);
+          return;
+        }
+
+        activePhase = 'transitioning';
+        stage.dataset.phase = 'transitioning';
+
+        const exited = waitForOpacityTransition(
+          card,
+          reducedMotion,
+          () => record('exiting', preparedStep.stepKey),
+          0
+        ).then(outcome => {
+          return recordOutcome(
+            'card',
+            'exit',
+            preparedStep.stepKey,
+            outcome
+          );
+        });
+
+        delete card.dataset.open;
+
+        const exitOutcome = await exited;
+
+        if (!isSuccessfulTransitionOutcome(exitOutcome)) {
+          finalizeRelease('runtime-error');
+          throw new Error(
+            `FIELD_FIRST_USE_CARD_EXIT_FAILED:${exitOutcome}`
+          );
+        }
+
+        record('exited', preparedStep.stepKey);
+      }
+    }
+
+    function startHandoffContent() {
+      if (handoffContentPromise) {
+        return handoffContentPromise;
+      }
+
+      if (handoffState !== 'BACKDROP_READY') {
+        return Promise.reject(new DOMException(
+          `FIELD_FIRST_USE_HANDOFF_INVALID_STATE:${handoffState}`,
+          'InvalidStateError'
+        ));
+      }
+
+      handoffContentPromise = (async () => {
+        setHandoffState('CONTENT_ENTERING');
+        const currentQualification = resolveEntryQualification(
+          handoffParsedMode
+        );
+
+        if (currentQualification.shouldBypass) {
+          handoffMode = 'backdrop-only';
+          const exited = waitForOpacityTransition(
+            spotlight,
+            matchMedia('(prefers-reduced-motion: reduce)').matches,
+            () => {},
+            0
+          );
+          delete spotlight.dataset.handoffOpen;
+          const outcome = await exited;
+
+          if (!isSuccessfulTransitionOutcome(outcome)) {
+            throw new Error(
+              `FIELD_FIRST_USE_SPOTLIGHT_BYPASS_EXIT_FAILED:${outcome}`
+            );
+          }
+
+          clearHandoffTransitionProperties();
+          spotlightPath.removeAttribute('d');
+          stage.dataset.sequenceEnded = 'bypassed-race';
+          document.documentElement.dataset.sequenceStatus =
+            'bypassed-race';
+          setHandoffState('ACTIVE');
+          document.documentElement.dataset.fieldFirstUseHandoffStatus =
+            'active';
+          page.focus({ preventScroll: true });
+          return Object.freeze({ mode: handoffMode, outcome });
+        }
+
+        handoffMode = 'guide';
+        await runSequence(
+          handoffPreparedSteps,
+          currentQualification,
+          {
+            spotlightPreopened: true,
+            onActive() {
+              setHandoffState('ACTIVE');
+              document.documentElement.dataset
+                .fieldFirstUseHandoffStatus = 'active';
+            },
+          }
+        );
+        return Object.freeze({ mode: handoffMode, outcome: 'complete' });
+      })();
+
+      return handoffContentPromise;
+    }
+
+    const handoffController = Object.freeze({
+      version: 1,
+      get state() {
+        return handoffState;
+      },
+      get mode() {
+        return handoffMode;
+      },
+      get replay() {
+        return Boolean(handoffParsedMode?.replay);
+      },
+      preopenBackdrop: preopenHandoffBackdrop,
+      resetBackdrop: resetHandoffBackdrop,
+      startContent: startHandoffContent,
+      failOpen: failOpenHandoff,
+      getAudit: getHandoffAudit,
+    });
+
+    window.__FIELD_FIRST_USE_HANDOFF_V1__ = handoffController;
+
+    function bypassNarrative(reason) {
+      stage.dataset.contentReady = 'true';
+      stage.dataset.sequenceEnded = reason;
+      document.documentElement.dataset.sequenceStatus = reason;
+      document.documentElement.dataset.trialStatus = 'ready';
+      window.__FIELD_FIRST_USE_SEQUENCE__ = Object.freeze({
+        bypassed: true,
+        exitReason: reason,
+        events: Object.freeze([]),
+        spotlightEvents: Object.freeze([]),
+      });
+      page.focus({ preventScroll: true });
+    }
+
+    async function initialize() {
+      requireElement(stage, 'STAGE');
+      requireElement(page, 'PAGE');
+      requireElement(card, 'CARD');
+      requireElement(copy, 'COPY');
+      requireElement(spotlight, 'SPOTLIGHT');
+      requireElement(spotlightPath, 'SPOTLIGHT_PATH');
+      requireElement(skip, 'SKIP');
+
+      mountFieldFrame(document.body, stage);
+      const mode = parseMode();
+      handoffParsedMode = mode;
+      document.documentElement.dataset.fieldFirstUseReplay =
+        mode.replay ? 'true' : 'false';
+      const qualification = resolveEntryQualification(mode);
+
+      if (mode.handoff) {
+        document.documentElement.dataset.fieldFirstUseHandoffStatus =
+          'preparing';
+      }
+
+      skip.style.left = `${SKIP_LEFT}px`;
+      skip.style.top = `${SKIP_TOP}px`;
+
+      const innerDocument = await waitForInnerReady();
+      const innerWindow = innerDocument.defaultView;
+
+      assertCurrentInnerDocument(
+        innerDocument,
+        innerWindow,
+        'FIELD_FIRST_USE_INNER_NAVIGATED_AFTER_READY',
+      );
+
+      if (
+        innerDocument.documentElement.dataset.previewStatus !== 'ready'
+      ) {
+        fatal(
+          `FIELD_FIRST_USE_PAGE_NOT_READY:` +
+          `${innerDocument.documentElement.dataset.previewStatus ?? 'missing'}`
+        );
+      }
+
+      await Promise.all([
+        document.fonts.ready,
+        innerDocument.fonts.ready,
+      ]);
+
+      assertCurrentInnerDocument(
+        innerDocument,
+        innerWindow,
+        'FIELD_FIRST_USE_INNER_NAVIGATED_DURING_FONTS',
+      );
+
+      const innerSurface = innerDocument.querySelector(
+        '[data-field-inner-cover-preview]'
+      );
+
+      if (!(innerSurface instanceof innerWindow.HTMLElement)) {
+        fatal('FIELD_FIRST_USE_INNER_SURFACE_MISSING');
+      }
+
+      if (qualification.shouldBypass && !mode.handoff) {
+        bypassNarrative(qualification.bypassReason);
+        return;
+      }
+
+      const stepKeys = mode.type === 'sequence'
+        ? Object.keys(STEPS)
+        : [mode.stepKey];
+      const preparedSteps = [];
+
+      for (const stepKey of stepKeys) {
+        const preparedStep = await prepareStep(
+          stepKey,
+          innerDocument,
+          innerWindow,
+          innerSurface
+        );
+
+        assertCurrentInnerDocument(
+          innerDocument,
+          innerWindow,
+          `FIELD_FIRST_USE_INNER_NAVIGATED_DURING_STEP:${stepKey}`,
+        );
+
+        preparedSteps.push(preparedStep);
+      }
+
+      if (mode.handoff) {
+        handoffPreparedSteps = preparedSteps;
+        handoffQualification = qualification;
+        handoffMode = qualification.shouldRun
+          ? 'guide'
+          : 'backdrop-only';
+
+        renderStep(preparedSteps[0]);
+        stage.dataset.contentReady = 'true';
+        void spotlight.offsetHeight;
+        void card.offsetHeight;
+        void skip.offsetHeight;
+
+        const spotlightOpacity = Number.parseFloat(
+          getComputedStyle(spotlight).opacity
+        );
+        const cardOpacity = Number.parseFloat(
+          getComputedStyle(card).opacity
+        );
+        const skipOpacity = Number.parseFloat(
+          getComputedStyle(skip).opacity
+        );
+
+        if (
+          !spotlightPath.getAttribute('d') ||
+          spotlightOpacity !== 0 ||
+          cardOpacity !== 0 ||
+          skipOpacity !== 0 ||
+          !skip.disabled ||
+          skip.dataset.interactive !== undefined ||
+          handoffController.version !== 1
+        ) {
+          fatal('FIELD_FIRST_USE_HANDOFF_ARMED_CONTRACT_FAILED');
+        }
+
+        assertCurrentInnerDocument(
+          innerDocument,
+          innerWindow,
+          'FIELD_FIRST_USE_INNER_NAVIGATED_BEFORE_ARMED',
+        );
+
+        setHandoffState('ARMED');
+        document.documentElement.dataset.fieldFirstUseHandoffStatus =
+          'armed';
+        document.documentElement.dataset.trialStatus = 'ready';
+        return;
+      }
+
+      if (mode.type === 'sequence') {
+        await runSequence(preparedSteps, qualification);
+        return;
+      }
+
+      const preparedStep = preparedSteps[0];
+      renderStep(preparedStep);
+      card.dataset.open = 'true';
+      spotlight.dataset.open = 'true';
+      stage.dataset.contentReady = 'true';
+      publishStepAudit(preparedStep);
+      document.documentElement.dataset.trialStatus = 'ready';
+    }
+
+    initialize().catch(error => {
+      if (document.documentElement.dataset.trialStatus !== 'error') {
+        fatal(
+          `FIELD_FIRST_USE_RUNTIME_FAILED:` +
+          `${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    });
+  </script>
+</body>
+</html>

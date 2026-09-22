@@ -1,0 +1,289 @@
+.fm-phi-trigger {
+  position: absolute;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fm-phi-trigger:focus-visible {
+  outline: 2px solid rgb(186 247 89 / 72%);
+  outline-offset: -6px;
+}
+
+.fm-phi-sheet {
+  --field-frame-scale: 1;
+
+  box-sizing: border-box;
+  position: fixed;
+  inset: auto;
+  top: 0;
+  left: 0;
+
+  width: 342px;
+  max-width: none;
+  height: auto;
+  max-height: 684px;
+  margin: 0;
+  padding: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: rgb(18 18 18 / 78%);
+  backdrop-filter: blur(24px) saturate(120%);
+  -webkit-backdrop-filter: blur(24px) saturate(120%);
+
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 28px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 35%);
+
+  color: #f5f5f5;
+  font-family:
+    "SourceHanSansCN-ExtraLight-GBpc-EUC-H",
+    "Source Han Sans SC",
+    sans-serif;
+  font-weight: 200;
+  font-synthesis: none;
+
+  opacity: 0;
+  transform:
+    scale(var(--field-frame-scale))
+    translateY(12px)
+    translate(50%, 100%)
+    scale(0.985)
+    translate(-50%, -100%);
+  transform-origin: 0 0;
+
+  /* 旧浏览器回退。 */
+  transition:
+    opacity 195ms cubic-bezier(0.4, 0, 1, 1) 0ms,
+    transform 195ms cubic-bezier(0.4, 0, 1, 1) 0ms;
+
+  /* 支持离散过场的当前浏览器。 */
+  transition:
+    opacity 195ms cubic-bezier(0.4, 0, 1, 1) 0ms,
+    transform 195ms cubic-bezier(0.4, 0, 1, 1) 0ms,
+    overlay 195ms cubic-bezier(0.4, 0, 1, 1) 0ms allow-discrete,
+    display 195ms cubic-bezier(0.4, 0, 1, 1) 0ms allow-discrete;
+}
+
+.fm-phi-sheet[open] {
+  opacity: 1;
+  transform:
+    scale(var(--field-frame-scale))
+    translateY(0)
+    translate(50%, 100%)
+    scale(1)
+    translate(-50%, -100%);
+
+  /* 旧浏览器回退。 */
+  transition:
+    opacity 225ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+  /* 支持离散过场的当前浏览器。 */
+  transition:
+    opacity 225ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    overlay 225ms cubic-bezier(0, 0, 0.2, 1) 0ms allow-discrete,
+    display 225ms cubic-bezier(0, 0, 0.2, 1) 0ms allow-discrete;
+}
+
+@starting-style {
+  .fm-phi-sheet[open] {
+    opacity: 0;
+    transform:
+      scale(var(--field-frame-scale))
+      translateY(12px)
+      translate(50%, 100%)
+      scale(0.985)
+      translate(-50%, -100%);
+  }
+}
+
+.fm-phi-sheet * {
+  box-sizing: border-box;
+  font-synthesis: none;
+}
+
+.fm-phi-sheet::backdrop {
+  background-color: transparent;
+
+  /* 旧浏览器回退。 */
+  transition:
+    background-color 195ms cubic-bezier(0.4, 0, 1, 1) 0ms;
+
+  /* 支持离散过场的当前浏览器。 */
+  transition:
+    background-color 195ms cubic-bezier(0.4, 0, 1, 1) 0ms,
+    overlay 195ms cubic-bezier(0.4, 0, 1, 1) 0ms allow-discrete,
+    display 195ms cubic-bezier(0.4, 0, 1, 1) 0ms allow-discrete;
+}
+
+.fm-phi-sheet[open]::backdrop {
+  background-color: rgb(0 0 0 / 70%);
+
+  /* 旧浏览器回退。 */
+  transition:
+    background-color 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+  /* 支持离散过场的当前浏览器。 */
+  transition:
+    background-color 225ms cubic-bezier(0, 0, 0.2, 1) 0ms,
+    overlay 225ms cubic-bezier(0, 0, 0.2, 1) 0ms allow-discrete,
+    display 225ms cubic-bezier(0, 0, 0.2, 1) 0ms allow-discrete;
+}
+
+@starting-style {
+  .fm-phi-sheet[open]::backdrop {
+    background-color: transparent;
+  }
+}
+
+.fm-phi-sheet__stack {
+  width: 100%;
+  height: auto;
+  transform: none;
+}
+
+.fm-phi-sheet__content {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 24px;
+}
+
+.fm-phi-sheet__title,
+.fm-phi-sheet__state,
+.fm-phi-sheet__label,
+.fm-phi-sheet__copy,
+.fm-phi-sheet__scope {
+  margin: 0;
+  font-family:
+    "SourceHanSansCN-ExtraLight-GBpc-EUC-H",
+    "Source Han Sans SC",
+    sans-serif;
+  font-weight: 200;
+}
+
+.fm-phi-sheet__title {
+  margin-top: 4px;
+  color: #f5f5f5;
+  font-size: 14px;
+  line-height: 28px;
+}
+
+.fm-phi-sheet__title:focus {
+  outline: none;
+}
+
+.fm-phi-sheet__state {
+  color: #BAF759;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.fm-phi-sheet__section {
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
+.fm-phi-sheet__section:first-of-type {
+  margin-top: 20px;
+}
+
+.fm-phi-sheet__section + .fm-phi-sheet__section {
+  margin-top: 16px;
+}
+
+.fm-phi-sheet__label {
+  color: #BAF759;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.fm-phi-sheet__copy {
+  min-height: 48px;
+  margin-top: 4px;
+  color: #f5f5f5;
+  font-size: 15px;
+  letter-spacing: 0;
+  line-break: strict;
+  line-height: 24px;
+  overflow-wrap: break-word;
+  text-align: left;
+  word-break: normal;
+}
+
+.fm-phi-sheet__scope {
+  margin-top: 20px;
+  color: #c7c7c7;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.fm-phi-sheet__trial-cta {
+  color: #BAF759;
+}
+
+.fm-phi-sheet__close {
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  right: 2px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #f5f5f5;
+  opacity: 0.7;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    opacity 120ms ease,
+    background-color 120ms ease;
+}
+
+.fm-phi-sheet__close:hover {
+  opacity: 1;
+}
+
+.fm-phi-sheet__close:focus-visible {
+  opacity: 1;
+  outline: none;
+  color: #BAF759;
+  filter: drop-shadow(0 0 3px rgb(186 247 89 / 56%));
+}
+
+.fm-phi-sheet__close svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-phi-sheet,
+  .fm-phi-sheet::backdrop {
+    transition: none;
+  }
+
+  .fm-phi-sheet,
+  .fm-phi-sheet[open] {
+    transform: scale(var(--field-frame-scale));
+  }
+}

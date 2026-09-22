@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if (new URLSearchParams(location.search).get('layout') === 'landscape') {
+      document.documentElement.dataset.fieldLayout = 'landscape';
+    }
+  </script>
+  <link rel="icon" href="data:,">
+  <title>Field Inner Cover Recovery Preview</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      min-height: 100dvh;
+      margin: 0;
+      overflow: hidden;
+      background: #050505;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+    }
+
+    .fm-surface {
+      position: absolute;
+      width: 390px;
+      height: 844px;
+      overflow: hidden;
+      background: #050505;
+    }
+
+    html[data-field-layout="landscape"] .fm-surface {
+      width: 1920px;
+      height: 1080px;
+      background: #000;
+    }
+
+    html[data-field-layout="landscape"] .fm-cover {
+      display: none;
+    }
+
+    .fm-cover {
+      position: absolute;
+      display: block;
+      width: 1026px;
+      height: 1069px;
+      transform: matrix(0.29692, 0, 0, 0.29692, 121.669477, -111.692243);
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+
+    .fm-content-authority {
+      position: absolute;
+      inset: 0;
+      width: 390px;
+      height: 844px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .fm-landscape-authority {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .fm-content-authority [data-authored-root="24"],
+    .fm-content-authority [data-authored-root="41"] {
+      display: none;
+    }
+
+    .fm-content-authority .st554 {
+      font-weight: 350;
+      font-synthesis: none;
+    }
+
+    .fm-content-authority .st557 {
+      font-weight: 300;
+      font-synthesis: none;
+    }
+
+    .fm-content-authority .st566 {
+      font-weight: 200;
+      font-synthesis: none;
+    }
+
+    .fm-preview-status {
+      position: fixed;
+      left: 6px;
+      bottom: 6px;
+      z-index: 20;
+      margin: 0;
+      color: #ff6b6b;
+      font: 11px/1.35 monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+  <script type="module" crossorigin src="/field-miner-landscape-simple-guide-v01/assets/inner-CyeJsb2K.js"></script>
+  <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/field-frame-fit-Sh8AhLlk.js">
+  <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/field-inner-landscape-authority-DMOjs_-2.js">
+  <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/field-dialog-light-dismiss-D525Ri39.js">
+  <link rel="stylesheet" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/inner-Cn7kx448.css">
+</head>
+<body data-field-frame-host>
+  <main
+    class="fm-surface"
+    data-field-inner-cover-preview
+    data-field-frame-stage
+  >
+    <img
+      class="fm-cover"
+      src="/field-miner-landscape-simple-guide-v01/assets/field-inner-cover-aligned-rgba-v01-CvZOCyIL.png"
+      alt=""
+      aria-hidden="true"
+    >
+    <button
+      class="fm-phi-trigger"
+      type="button"
+      aria-label="查看发生势说明"
+      aria-haspopup="dialog"
+      aria-controls="fm-phi-sheet"
+      aria-expanded="false"
+      data-field-phi-trigger
+      hidden
+    ></button>
+    <button
+      class="fm-current-field-trigger"
+      type="button"
+      aria-label="查看当前发生场说明"
+      aria-haspopup="dialog"
+      aria-controls="fm-current-field-sheet"
+      aria-expanded="false"
+      data-field-current-trigger
+      hidden
+    ></button>
+    <div
+      class="fm-scope-switch"
+      role="radiogroup"
+      aria-label="数据范围"
+      data-field-scope-switch
+      hidden
+    >
+      <button
+        class="fm-scope-option"
+        type="button"
+        role="radio"
+        aria-checked="true"
+        tabindex="0"
+        data-field-scope-option="global"
+      >
+        <span class="fm-scope-label">GLOBAL</span>
+      </button>
+
+      <button
+        class="fm-scope-option"
+        type="button"
+        role="radio"
+        aria-checked="false"
+        tabindex="-1"
+        data-field-scope-option="greater-china"
+      >
+        <span class="fm-scope-label">CHINA</span>
+      </button>
+
+      <span
+        class="fm-scope-indicator"
+        aria-hidden="true"
+        data-field-scope-indicator
+      ></span>
+    </div>
+  </main>
+  <dialog
+    id="fm-phi-sheet"
+    class="fm-phi-sheet"
+    data-field-phi-sheet
+    closedby="closerequest"
+    aria-labelledby="fm-phi-sheet-title"
+  >
+    <button
+      class="fm-phi-sheet__close"
+      type="button"
+      aria-label="关闭发生势说明"
+      data-field-phi-sheet-close
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+    <div class="fm-phi-sheet__stack">
+      <div class="fm-phi-sheet__content" data-field-phi-sheet-content>
+        <p class="fm-phi-sheet__state" data-field-phi-sheet-state></p>
+        <h2
+          class="fm-phi-sheet__title"
+          id="fm-phi-sheet-title"
+          data-field-phi-sheet-title
+          tabindex="-1"
+        ></h2>
+        <section class="fm-phi-sheet__section">
+          <h3 class="fm-phi-sheet__label">形成依据</h3>
+          <p class="fm-phi-sheet__copy" data-field-phi-sheet-basis></p>
+        </section>
+        <section class="fm-phi-sheet__section">
+          <h3 class="fm-phi-sheet__label">近期方向</h3>
+          <p class="fm-phi-sheet__copy" data-field-phi-sheet-direction></p>
+        </section>
+        <p class="fm-phi-sheet__scope" data-field-phi-sheet-scope></p>
+      </div>
+    </div>
+  </dialog>
+  <dialog
+    id="fm-current-field-sheet"
+    class="fm-current-field-sheet"
+    data-field-current-sheet
+    closedby="closerequest"
+    aria-labelledby="fm-current-field-sheet-title"
+  >
+    <button
+      class="fm-current-field-sheet__close"
+      type="button"
+      aria-label="关闭当前发生场说明"
+      data-field-current-sheet-close
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+
+    <div class="fm-current-field-sheet__content">
+      <p
+        class="fm-current-field-sheet__state"
+        data-field-current-sheet-state
+      ></p>
+
+      <h2
+        id="fm-current-field-sheet-title"
+        class="fm-current-field-sheet__title"
+        data-field-current-sheet-title
+        tabindex="-1"
+      ></h2>
+
+      <p
+        class="fm-current-field-sheet__definition"
+        data-field-current-sheet-definition
+      ></p>
+
+      <section class="fm-current-field-sheet__boundary-section">
+        <h3 class="fm-current-field-sheet__label">
+          本项不包括
+        </h3>
+
+        <div data-field-current-sheet-boundaries></div>
+      </section>
+    </div>
+  </dialog>
+  <pre class="fm-preview-status" data-preview-status hidden></pre>
+
+</body>
+</html>

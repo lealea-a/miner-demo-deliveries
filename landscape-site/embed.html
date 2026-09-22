@@ -1,0 +1,224 @@
+<!doctype html>
+<html
+  lang="zh-CN"
+  data-field-master-status="preparing"
+  data-field-master-bootstrap="pending"
+  data-field-master-mode="pending"
+>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="data:,">
+    <title>Field Miner Landscape Embed</title>
+    <style>
+      :root,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100dvh;
+        overflow: hidden;
+        background: #000;
+      }
+
+      [data-field-master-frame] {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #000;
+      }
+
+      [data-field-master-error] {
+        position: fixed;
+        inset: 16px;
+        z-index: 2;
+        display: none;
+        margin: 0;
+        padding: 12px;
+        overflow: auto;
+        border: 1px solid #ff667a;
+        color: #ffb8c1;
+        background: #120207;
+        font: 12px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+        white-space: pre-wrap;
+      }
+
+      html[data-field-master-status="error"] [data-field-master-frame] {
+        visibility: hidden;
+      }
+
+      html[data-field-master-status="error"] [data-field-master-error] {
+        display: block;
+      }
+    </style>
+    <script>
+      (() => {
+        const BOOTSTRAP_TIMEOUT_MS = 8000;
+        const MESSAGE_DETAIL_LIMIT = 512;
+        const root = document.documentElement;
+        let settled = false;
+        let timeoutId = 0;
+        let parentProtocol = null;
+
+        function cleanup() {
+          clearTimeout(timeoutId);
+          window.removeEventListener('error', handleResourceError, true);
+        }
+
+        function renderError(code) {
+          const errorOutput = document.querySelector('[data-field-master-error]');
+          if (errorOutput instanceof HTMLOutputElement) {
+            errorOutput.hidden = false;
+            errorOutput.textContent = `FIELD_MASTER_EMBED_FAILED\n${code}`;
+            return;
+          }
+          window.addEventListener(
+            'DOMContentLoaded',
+            () => renderError(code),
+            { once: true },
+          );
+        }
+
+        function reveal(code, detail = code) {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          root.dataset.fieldMasterBootstrap = 'error';
+          root.dataset.fieldMasterStatus = 'error';
+          renderError(code);
+          parentProtocol?.error(code, detail);
+        }
+
+        function handleResourceError(event) {
+          const target = event.target;
+          if (
+            target instanceof HTMLScriptElement
+            && target.type === 'module'
+          ) {
+            reveal('FIELD_MASTER_BOOTSTRAP_MODULE_LOAD_FAILED');
+          }
+        }
+
+        function parseParentOrigin() {
+          const params = new URLSearchParams(location.search);
+          const values = params.getAll('parent_origin');
+          if (values.length !== 1 || values[0] === '') {
+            throw new Error('FIELD_MASTER_PARENT_ORIGIN_REQUIRED');
+          }
+
+          let candidate;
+          try {
+            candidate = new URL(values[0]);
+          } catch {
+            throw new Error('FIELD_MASTER_PARENT_ORIGIN_INVALID');
+          }
+          let referrerOrigin = null;
+          try {
+            referrerOrigin = document.referrer
+              ? new URL(document.referrer).origin
+              : null;
+          } catch {
+            referrerOrigin = null;
+          }
+          if (
+            !['http:', 'https:'].includes(candidate.protocol)
+            || candidate.origin === 'null'
+            || candidate.username !== ''
+            || candidate.password !== ''
+            || candidate.pathname !== '/'
+            || candidate.search !== ''
+            || candidate.hash !== ''
+            || values[0] !== candidate.origin
+            || candidate.origin === location.origin
+            || window.parent === window
+            || candidate.origin !== referrerOrigin
+          ) {
+            throw new Error('FIELD_MASTER_PARENT_ORIGIN_INVALID');
+          }
+          return candidate.origin;
+        }
+
+        function createParentProtocol(targetOrigin) {
+          let terminalStatus = null;
+
+          function post(message) {
+            if (terminalStatus !== null) return false;
+            terminalStatus = message.status;
+            window.parent.postMessage(Object.freeze(message), targetOrigin);
+            return true;
+          }
+
+          return Object.freeze({
+            targetOrigin,
+            ready(mode, replay) {
+              return post({
+                type: 'FIELD_MINER_EMBED_STATUS',
+                version: 1,
+                status: 'ready',
+                mode,
+                replay,
+              });
+            },
+            error(code, detail) {
+              return post({
+                type: 'FIELD_MINER_EMBED_STATUS',
+                version: 1,
+                status: 'error',
+                code,
+                detail: String(detail).slice(0, MESSAGE_DETAIL_LIMIT),
+              });
+            },
+            get status() {
+              return terminalStatus;
+            },
+          });
+        }
+
+        try {
+          parentProtocol = createParentProtocol(parseParentOrigin());
+        } catch (error) {
+          settled = true;
+          root.dataset.fieldMasterBootstrap = 'error';
+          root.dataset.fieldMasterStatus = 'error';
+          renderError(error instanceof Error ? error.message : String(error));
+          return;
+        }
+
+        timeoutId = setTimeout(
+          () => reveal('FIELD_MASTER_BOOTSTRAP_TIMEOUT'),
+          BOOTSTRAP_TIMEOUT_MS,
+        );
+        window.addEventListener('error', handleResourceError, true);
+
+        Object.defineProperty(window, '__FIELD_MASTER_BOOTSTRAP_GATE__', {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: Object.freeze({
+            start() {
+              if (settled) return parentProtocol;
+              settled = true;
+              cleanup();
+              root.dataset.fieldMasterBootstrap = 'started';
+              return parentProtocol;
+            },
+          }),
+        });
+      })();
+    </script>
+    <script type="module" crossorigin src="/field-miner-landscape-simple-guide-v01/assets/embed-BLFppoUG.js"></script>
+    <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  </head>
+  <body>
+    <iframe
+      data-field-master-frame
+      title="Field Miner 横版内页"
+      loading="eager"
+      referrerpolicy="same-origin"
+    ></iframe>
+    <output data-field-master-error hidden>FIELD_MASTER_EMBED_FAILED</output>
+
+  </body>
+</html>

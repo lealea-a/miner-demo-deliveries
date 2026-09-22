@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if (new URLSearchParams(location.search).get('layout') === 'landscape') {
+      document.documentElement.dataset.fieldLayout = 'landscape';
+    }
+  </script>
+  <link rel="icon" href="data:,">
+  <title>Field First-use Narrative Layout Trial</title>
+  <script type="module" crossorigin src="/field-miner-landscape-simple-guide-v01/assets/guide-B1iuJQy7.js"></script>
+  <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/field-frame-fit-Sh8AhLlk.js">
+  <link rel="stylesheet" crossorigin href="/field-miner-landscape-simple-guide-v01/assets/guide-l0nObxd5.css">
+</head>
+<body data-field-frame-host>
+  <main
+    class="fm-first-use-trial"
+    data-field-frame-stage
+    data-field-first-use-trial
+  >
+    <iframe
+      class="fm-first-use-trial__page"
+      src="./field-inner-cover-preview.html"
+      title="Field Miner 真实内页"
+      data-field-first-use-page
+    ></iframe>
+
+    <svg
+      class="fm-first-use-trial__spotlight"
+      viewBox="0 0 390 844"
+      aria-hidden="true"
+      data-field-first-use-spotlight
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        data-field-first-use-spotlight-path
+      ></path>
+    </svg>
+
+    <section
+      class="fm-first-use-card"
+      aria-live="off"
+      data-field-first-use-card
+    >
+      <p data-field-first-use-copy></p>
+    </section>
+
+    <button
+      class="fm-first-use-skip"
+      type="button"
+      aria-label="跳过首次说明"
+      data-field-first-use-skip
+      disabled
+      aria-hidden="true"
+    >跳过</button>
+  </main>
+
+  <pre
+    class="fm-first-use-trial__status"
+    data-field-first-use-status
+    hidden
+  ></pre>
+
+</body>
+</html>

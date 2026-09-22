@@ -1,0 +1,27 @@
+{
+  "name": "Field Miner",
+  "short_name": "FIELD MINER",
+  "description": "看穿正在发生的，推动值得发生的。",
+  "lang": "zh-CN",
+  "id": "/field-miner-mobile-v01/",
+  "start_url": "/field-miner-mobile-v01/field-entry-exit-trial.html",
+  "scope": "/field-miner-mobile-v01/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/field-miner-mobile-v01/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/field-miner-mobile-v01/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

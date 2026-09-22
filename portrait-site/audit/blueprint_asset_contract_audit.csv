@@ -1,0 +1,14 @@
+node_id,asset_type,declared_path,normalized_path,exists,readable,validated,authority_proven,status,notes
+entry-html,html,field-entry-exit-trial.html,field-entry-exit-trial.html,true,true,true,true,PASS,Runtime Entry
+entry-styles,css,src/styles.css,src/styles.css,true,true,true,true,PASS,Entry layout and typography
+entry-runtime,javascript,field-entry-same-document-handoff-v02.js,field-entry-runtime.js,true,true,true,true,PASS,Bundled copy only
+entry-webgl,javascript,src/main.js,field-entry-runtime.js,true,true,true,true,PASS,Three and DragGesture bundled
+three-core,javascript,three.core.js,field-entry-runtime.js,true,true,true,true,PASS,Explicit import of canonical three.module.js
+guide-html,html,field-first-use-narrative-layout-trial-v01.html,field-first-use-narrative-layout-trial-v01.html,true,true,true,true,PASS,First-use guide
+inner-html,html,field-inner-cover-preview.html,field-inner-cover-preview.html,true,true,true,true,PASS,Inner shell
+registry-global,json,global-v12.json,field-inner-registry.runtime.js,true,true,true,true,PASS,Registry bundled without content changes
+registry-china,json,greater-china-v12.json,field-inner-registry.runtime.js,true,true,true,true,PASS,Registry bundled without content changes
+authority-svg,svg,field-inner-d04-content-v02.svg,assets/field-inner-d04-content-v02.svg,true,true,true,true,PASS,Canonical authority asset
+flight-1x,png,field-entry-flight-s16-rgba-v01-1x.png,assets/field-entry-flight-s16-rgba-v01-1x.png,true,true,true,true,PASS,Optimized responsive asset
+flight-2x,png,field-entry-flight-s16-rgba-v01-2x.png,assets/field-entry-flight-s16-rgba-v01-2x.png,true,true,true,true,PASS,Optimized responsive asset
+flight-2p5x,png,field-entry-flight-s16-rgba-v01-2p5x.png,assets/field-entry-flight-s16-rgba-v01-2p5x.png,true,true,true,true,PASS,Optimized responsive asset

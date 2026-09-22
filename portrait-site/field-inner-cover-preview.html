@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./field-inner-slider.css">
+  <link rel="stylesheet" href="./field-inner-phi-sheet.css">
+  <link rel="stylesheet" href="./field-trial-bridge.css">
+  <link
+    rel="stylesheet"
+    href="./field-inner-current-field-sheet.css"
+  >
+  <link rel="stylesheet" href="./field-inner-scope-switch.css">
+  <link
+    rel="stylesheet"
+    href="./fonts/site-v2/field-miner-compat.css"
+  >
+  <title>Field Inner Cover Recovery Preview</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      min-height: 100dvh;
+      margin: 0;
+      overflow: hidden;
+      background: #050505;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+    }
+
+    .fm-surface {
+      position: absolute;
+      width: 390px;
+      height: 844px;
+      overflow: hidden;
+      background: #050505;
+    }
+
+    .fm-cover {
+      position: absolute;
+      display: block;
+      width: 1026px;
+      height: 1069px;
+      transform: matrix(0.29692, 0, 0, 0.29692, 121.669477, -111.692243);
+      transform-origin: 0 0;
+      pointer-events: none;
+    }
+
+    .fm-content-authority {
+      position: absolute;
+      inset: 0;
+      width: 390px;
+      height: 844px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .fm-content-authority [data-authored-root="24"],
+    .fm-content-authority [data-authored-root="41"] {
+      display: none;
+    }
+
+    .fm-content-authority .st554 {
+      font-weight: 350;
+      font-synthesis: none;
+    }
+
+    .fm-content-authority .st557 {
+      font-weight: 300;
+      font-synthesis: none;
+    }
+
+    .fm-content-authority .st566 {
+      font-weight: 200;
+      font-synthesis: none;
+    }
+
+    .fm-preview-status {
+      position: fixed;
+      left: 6px;
+      bottom: 6px;
+      z-index: 20;
+      margin: 0;
+      color: #ff6b6b;
+      font: 11px/1.35 monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body data-field-frame-host>
+  <main
+    class="fm-surface"
+    data-field-inner-cover-preview
+    data-field-frame-stage
+  >
+    <img
+      class="fm-cover"
+      src="./assets/field-inner-cover-aligned-rgba-v01.png"
+      alt=""
+      aria-hidden="true"
+    >
+    <button
+      class="fm-phi-trigger"
+      type="button"
+      aria-label="查看发生势说明"
+      aria-haspopup="dialog"
+      aria-controls="fm-phi-sheet"
+      aria-expanded="false"
+      data-field-phi-trigger
+      hidden
+    ></button>
+    <button
+      class="fm-current-field-trigger"
+      type="button"
+      aria-label="查看当前发生场说明"
+      aria-haspopup="dialog"
+      aria-controls="fm-current-field-sheet"
+      aria-expanded="false"
+      data-field-current-trigger
+      hidden
+    ></button>
+    <div
+      class="fm-scope-switch"
+      role="radiogroup"
+      aria-label="数据范围"
+      data-field-scope-switch
+      hidden
+    >
+      <button
+        class="fm-scope-option"
+        type="button"
+        role="radio"
+        aria-checked="true"
+        tabindex="0"
+        data-field-scope-option="global"
+      >
+        <span class="fm-scope-label">GLOBAL</span>
+      </button>
+
+      <button
+        class="fm-scope-option"
+        type="button"
+        role="radio"
+        aria-checked="false"
+        tabindex="-1"
+        data-field-scope-option="greater-china"
+      >
+        <span class="fm-scope-label">CHINA</span>
+      </button>
+
+      <span
+        class="fm-scope-indicator"
+        aria-hidden="true"
+        data-field-scope-indicator
+      ></span>
+    </div>
+  </main>
+  <dialog
+    id="fm-phi-sheet"
+    class="fm-phi-sheet"
+    data-field-phi-sheet
+    closedby="closerequest"
+    aria-labelledby="fm-phi-sheet-title"
+  >
+    <button
+      class="fm-phi-sheet__close"
+      type="button"
+      aria-label="关闭发生势说明"
+      data-field-phi-sheet-close
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+    <div class="fm-phi-sheet__stack">
+      <div class="fm-phi-sheet__content" data-field-phi-sheet-content>
+        <p class="fm-phi-sheet__state" data-field-phi-sheet-state></p>
+        <h2
+          class="fm-phi-sheet__title"
+          id="fm-phi-sheet-title"
+          data-field-phi-sheet-title
+          tabindex="-1"
+          autofocus
+        ></h2>
+        <section class="fm-phi-sheet__section">
+          <h3 class="fm-phi-sheet__label">形成依据</h3>
+          <p class="fm-phi-sheet__copy" data-field-phi-sheet-basis></p>
+        </section>
+        <section class="fm-phi-sheet__section">
+          <h3 class="fm-phi-sheet__label">近期方向</h3>
+          <p class="fm-phi-sheet__copy" data-field-phi-sheet-direction></p>
+        </section>
+        <p class="fm-phi-sheet__scope" data-field-phi-sheet-scope><span data-field-phi-sheet-scope-label></span> · <button
+          type="button"
+          class="fm-phi-sheet__trial-cta"
+          data-field-trial-trigger
+        >接入试算→</button></p>
+      </div>
+    </div>
+  </dialog>
+  <dialog
+    id="fm-current-field-sheet"
+    class="fm-current-field-sheet"
+    data-field-current-sheet
+    closedby="closerequest"
+    aria-labelledby="fm-current-field-sheet-title"
+  >
+    <button
+      class="fm-current-field-sheet__close"
+      type="button"
+      aria-label="关闭当前发生场说明"
+      data-field-current-sheet-close
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+
+    <div class="fm-current-field-sheet__content">
+      <p
+        class="fm-current-field-sheet__state"
+        data-field-current-sheet-state
+      ></p>
+
+      <h2
+        id="fm-current-field-sheet-title"
+        class="fm-current-field-sheet__title"
+        data-field-current-sheet-title
+        tabindex="-1"
+      ></h2>
+
+      <p
+        class="fm-current-field-sheet__definition"
+        data-field-current-sheet-definition
+      ></p>
+
+      <section class="fm-current-field-sheet__boundary-section">
+        <h3 class="fm-current-field-sheet__label">
+          本项不包括
+        </h3>
+
+        <div data-field-current-sheet-boundaries></div>
+      </section>
+    </div>
+  </dialog>
+  <pre class="fm-preview-status" data-preview-status hidden></pre>
+
+  <script type="module">
+    import {
+      FIELD_FRAME_WIDTH,
+      getFieldFrameViewport,
+      logicalRectToViewport,
+      mountFieldFrame,
+    } from './field-frame-fit.js';
+    import { installDialogLightDismiss } from './field-dialog-light-dismiss.js';
+    import { createFieldTrialBridgeDialog } from './field-trial-bridge-dialog.js';
+
+    const ASSET_URL = './assets/field-inner-d04-content-v02.svg';
+    const FIELD_TRIAL_BRIDGE_ASSET_URL = './assets/frame1-field-body.svg';
+    const REGISTRY_MODULE_URL =
+      './field-inner-registry.runtime.js';
+    const INITIAL_REGISTRY_SCOPE = 'global';
+    const INITIAL_DOMAIN_INDEX = 1;
+    const REGISTRY_IDS_BY_SCOPE = Object.freeze({
+      global: 'FIELD_MINER_DEMO_GLOBAL_18_V1_2',
+      'greater-china':
+        'FIELD_MINER_DEMO_GREATER_CHINA_18_V1_2',
+    });
+    const PUBLIC_SCOPE_LABELS = Object.freeze({
+      global: 'GLOBAL',
+      'greater-china': 'CHINA',
+    });
+    const PHI_TRIGGER_SIZE = 44;
+    const PHI_ICON_SIZE = 14;
+    const PHI_DIALOG_LEFT = 24;
+    const PHI_DIALOG_TOP = 356;
+    const PHI_DIALOG_WIDTH = 342;
+    const GEOMETRY_EPSILON = 0.001;
+    const surface = document.querySelector('[data-field-inner-cover-preview]');
+    const status = document.querySelector('[data-preview-status]');
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const frameRuntime = mountFieldFrame(document.body, surface);
+
+    const AUTHORED_ROOT_BY_DERIVED_CHILD = Object.freeze([
+      1, 4,
+      6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+      20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+      34, 35, 36, 37, 38, 39, 40, 41,
+    ]);
+
+    const LAYOUT_BANDS = Object.freeze([
+      { id: 'masthead', roots: [4], dx: 0, dy: -20 },
+      { id: 'event-heading', roots: [6, 8, 9, 10, 11, 40], dx: 0, dy: -20 },
+      { id: 'metrics', roots: [12, 13, 17, 19, 20], dx: 0, dy: -16 },
+      { id: 'hero', roots: [14, 15, 16, 18, 21, 22, 23], dx: 0, dy: -16 },
+      { id: 'hero-cta', roots: [24, 41], dx: 0, dy: -12 },
+      { id: 'slider-heading', roots: [25, 38, 39], dx: 0, dy: -16 },
+      {
+        id: 'slider-ruler',
+        roots: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37],
+        dx: 0,
+        dy: -16,
+      },
+      { id: 'slider-label', roots: [7], dx: 0, dy: -16 },
+    ]);
+
+    function fatal(message) {
+      document.documentElement.dataset.previewStatus = 'error';
+      status.hidden = false;
+      status.textContent = message;
+      throw new Error(message);
+    }
+
+    async function loadRegistryRuntimes() {
+      const {
+        listFieldDomains,
+        selectFieldDomain,
+      } = await import(REGISTRY_MODULE_URL);
+
+      const domains = listFieldDomains(
+        INITIAL_REGISTRY_SCOPE
+      );
+      const greaterChinaDomains = listFieldDomains(
+        'greater-china'
+      );
+      const initialSelection = selectFieldDomain(
+        INITIAL_REGISTRY_SCOPE,
+        INITIAL_DOMAIN_INDEX
+      );
+
+      if (
+        domains.length !== 18 ||
+        greaterChinaDomains.length !== 18 ||
+        domains.some(
+          (entry, offset) =>
+            entry.index !== greaterChinaDomains[offset].index ||
+            entry.domain !== greaterChinaDomains[offset].domain
+        ) ||
+        initialSelection.registry.registry_id !==
+          'FIELD_MINER_DEMO_GLOBAL_18_V1_2' ||
+        initialSelection.registry.registry_version !== 'v1.2' ||
+        initialSelection.entry.index !== INITIAL_DOMAIN_INDEX
+      ) {
+        fatal(
+          `REGISTRY_CONTRACT_FAILED: ` +
+          `${initialSelection.registry.registry_id} / ` +
+          `${domains.length} / ` +
+          `${initialSelection.entry.index}`
+        );
+      }
+
+      let activeScope = INITIAL_REGISTRY_SCOPE;
+      let activeSelection = initialSelection;
+
+      const scopeRuntime = Object.freeze({
+        get scope() {
+          return activeScope;
+        },
+        domains: Object.freeze(domains),
+        get selection() {
+          return activeSelection;
+        },
+        select(index) {
+          const next = selectFieldDomain(
+            activeScope,
+            index
+          );
+
+          activeSelection = next;
+          return next;
+        },
+        switchScope(nextScope) {
+          const next = selectFieldDomain(
+            nextScope,
+            activeSelection.entry.index
+          );
+
+          activeScope = nextScope;
+          activeSelection = next;
+          return next;
+        },
+      });
+
+      const taxonomyRuntime = Object.freeze({
+        scope: 'global',
+        domains: Object.freeze(domains),
+        selection: initialSelection,
+        select(index) {
+          return selectFieldDomain('global', index);
+        },
+      });
+
+      return Object.freeze({
+        scopeRuntime,
+        taxonomyRuntime,
+      });
+    }
+
+    function applyAuthorityLayoutBands(authoritySvg) {
+      const importedRoots = Array.from(authoritySvg.children);
+
+      if (importedRoots.length !== AUTHORED_ROOT_BY_DERIVED_CHILD.length) {
+        fatal(
+          `LAYOUT_ROOT_COUNT_FAILED: ` +
+          `${importedRoots.length}/${AUTHORED_ROOT_BY_DERIVED_CHILD.length}`
+        );
+      }
+
+      const nodeByAuthoredRoot = new Map(
+        AUTHORED_ROOT_BY_DERIVED_CHILD.map(
+          (authoredRoot, derivedIndex) => [
+            authoredRoot,
+            importedRoots[derivedIndex],
+          ]
+        )
+      );
+
+      const assignedRoots = new Set();
+
+      for (const band of LAYOUT_BANDS) {
+        for (const authoredRoot of band.roots) {
+          if (assignedRoots.has(authoredRoot)) {
+            fatal(`LAYOUT_ROOT_DUPLICATED: ${authoredRoot}`);
+          }
+
+          const node = nodeByAuthoredRoot.get(authoredRoot);
+          if (!node || authoredRoot === 1) {
+            fatal(`LAYOUT_ROOT_MISSING_OR_FORBIDDEN: ${authoredRoot}`);
+          }
+
+          assignedRoots.add(authoredRoot);
+
+          if (band.dx === 0 && band.dy === 0) continue;
+
+          const originalTransform = node.getAttribute('transform');
+          const wrapper = document.createElementNS(SVG_NS, 'g');
+
+          wrapper.dataset.layoutBand = band.id;
+          wrapper.dataset.authoredRoot = String(authoredRoot);
+          wrapper.setAttribute(
+            'transform',
+            `translate(${band.dx} ${band.dy})`
+          );
+
+          node.parentNode.insertBefore(wrapper, node);
+          wrapper.appendChild(node);
+
+          if (node.getAttribute('transform') !== originalTransform) {
+            fatal(`LAYOUT_INNER_TRANSFORM_CHANGED: ${authoredRoot}`);
+          }
+        }
+      }
+
+      const expectedVisualRoots =
+        AUTHORED_ROOT_BY_DERIVED_CHILD.filter(root => root !== 1);
+
+      if (
+        assignedRoots.size !== expectedVisualRoots.length ||
+        expectedVisualRoots.some(root => !assignedRoots.has(root))
+      ) {
+        fatal('LAYOUT_ROOT_COVERAGE_FAILED');
+      }
+
+      return nodeByAuthoredRoot;
+    }
+
+    function positionPhiTrigger(trigger, icon) {
+      const surfaceRect = surface.getBoundingClientRect();
+      const iconRect = icon.getBoundingClientRect();
+      const scale = surfaceRect.width / FIELD_FRAME_WIDTH;
+
+      const centerX =
+        (
+          iconRect.left -
+          surfaceRect.left +
+          iconRect.width / 2
+        ) / scale;
+
+      const centerY =
+        (
+          iconRect.top -
+          surfaceRect.top +
+          iconRect.height / 2
+        ) / scale;
+
+      const logicalIconWidth = iconRect.width / scale;
+      const logicalIconHeight = iconRect.height / scale;
+
+      const left = centerX - PHI_TRIGGER_SIZE / 2;
+      const top = centerY - PHI_TRIGGER_SIZE / 2;
+
+      if (
+        ![centerX, centerY, left, top].every(Number.isFinite) ||
+        Math.abs(logicalIconWidth - PHI_ICON_SIZE) > GEOMETRY_EPSILON ||
+        Math.abs(logicalIconHeight - PHI_ICON_SIZE) > GEOMETRY_EPSILON
+      ) {
+        fatal('FIELD_PHI_TRIGGER_GEOMETRY_FAILED');
+      }
+
+      trigger.style.left = `${left}px`;
+      trigger.style.top = `${top}px`;
+      trigger.hidden = false;
+
+      return Object.freeze({
+        centerX,
+        centerY,
+        left,
+        top,
+      });
+    }
+
+    function positionPhiDialog(dialog) {
+      if (!dialog.open) {
+        return;
+      }
+
+      if (dialog.offsetWidth !== PHI_DIALOG_WIDTH) {
+        fatal(
+          `FIELD_PHI_SHEET_WIDTH_FAILED:` +
+          `${dialog.offsetWidth}/${PHI_DIALOG_WIDTH}`
+        );
+      }
+
+      const frame = getFieldFrameViewport(surface);
+      const viewportRect = logicalRectToViewport(frame, {
+        x: PHI_DIALOG_LEFT,
+        y: PHI_DIALOG_TOP,
+        width: PHI_DIALOG_WIDTH,
+        height: dialog.offsetHeight,
+      });
+
+      dialog.style.setProperty(
+        '--field-frame-scale',
+        String(frame.scale)
+      );
+      dialog.style.left = `${viewportRect.x}px`;
+      dialog.style.top = `${viewportRect.y}px`;
+    }
+
+    function initializePhiSheet(registryRuntime) {
+      const dialog = document.querySelector('[data-field-phi-sheet]');
+      const trigger = surface.querySelector('[data-field-phi-trigger]');
+      const icon = surface.querySelector(
+        '[data-field-phi-information="true"]'
+      );
+      if (!(dialog instanceof HTMLDialogElement)) {
+        fatal('FIELD_PHI_SHEET_DIALOG_MISSING');
+      }
+      installDialogLightDismiss(dialog);
+      if (!(trigger instanceof HTMLButtonElement)) {
+        fatal('FIELD_PHI_TRIGGER_MISSING');
+      }
+      if (!(icon instanceof SVGImageElement)) {
+        fatal('FIELD_PHI_TRIGGER_ICON_MISSING');
+      }
+      const closeButton = dialog.querySelector(
+        '[data-field-phi-sheet-close]'
+      );
+      if (!(closeButton instanceof HTMLButtonElement)) {
+        fatal('FIELD_PHI_SHEET_CLOSE_MISSING');
+      }
+
+      const titleNode = dialog.querySelector(
+        '[data-field-phi-sheet-title]'
+      );
+      const stateNode = dialog.querySelector(
+        '[data-field-phi-sheet-state]'
+      );
+      const basisNode = dialog.querySelector(
+        '[data-field-phi-sheet-basis]'
+      );
+      const directionNode = dialog.querySelector(
+        '[data-field-phi-sheet-direction]'
+      );
+      const scopeNode = dialog.querySelector(
+        '[data-field-phi-sheet-scope]'
+      );
+      const scopeLabelNode = scopeNode?.querySelector(
+        '[data-field-phi-sheet-scope-label]'
+      );
+      const trialTrigger = scopeNode?.querySelector(
+        '[data-field-trial-trigger]'
+      );
+
+      if (
+        ![
+          titleNode,
+          stateNode,
+          basisNode,
+          directionNode,
+          scopeNode,
+          scopeLabelNode,
+        ].every(node => node instanceof HTMLElement)
+      ) {
+        fatal('FIELD_PHI_SHEET_CONTENT_NODES_MISSING');
+      }
+      if (!(trialTrigger instanceof HTMLButtonElement)) {
+        fatal('FIELD_TRIAL_TRIGGER_MISSING');
+      }
+
+      let currentSelection = null;
+      const trialBridge = createFieldTrialBridgeDialog({
+        root: document.body,
+        coveredDialog: dialog,
+        assetUrl: FIELD_TRIAL_BRIDGE_ASSET_URL,
+        onError(error) {
+          const message =
+            `FIELD_TRIAL_BRIDGE_FAILED:` +
+            `${error instanceof Error ? error.message : String(error)}`;
+          document.documentElement.dataset.previewStatus = 'error';
+          status.hidden = false;
+          status.textContent = message;
+          console.error(error);
+        },
+      });
+
+      trialTrigger.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        void trialBridge.open(trialTrigger).catch(() => {});
+      });
+
+      function render(selection) {
+        const entry = selection?.entry;
+        const registry = selection?.registry;
+        const scope = registryRuntime.scope;
+        const expectedRegistryId =
+          REGISTRY_IDS_BY_SCOPE[scope];
+        const publicScopeLabel =
+          PUBLIC_SCOPE_LABELS[scope];
+
+        if (
+          !entry ||
+          !Number.isInteger(entry.index) ||
+          entry.index < 1 ||
+          entry.index > 18
+        ) {
+          fatal('FIELD_PHI_SHEET_SELECTION_FAILED');
+        }
+
+        if (
+          !expectedRegistryId ||
+          !publicScopeLabel ||
+          registry?.registry_id !== expectedRegistryId ||
+          registry?.registry_version !== 'v1.2' ||
+          registry?.meta?.data_status !==
+            'EVIDENCE_CONSTRAINED_DEMO_SIMULATED'
+        ) {
+          fatal('FIELD_PHI_SHEET_REGISTRY_CONTRACT_FAILED');
+        }
+
+        const explanationParts = entry.explanation
+          .split('；')
+          .map(part => part.trim());
+
+        if (
+          explanationParts.length !== 2 ||
+          explanationParts.some(part => part.length === 0)
+        ) {
+          fatal(
+            `FIELD_PHI_SHEET_EXPLANATION_CONTRACT_FAILED:` +
+            `${entry.index}/${explanationParts.length}`
+          );
+        }
+
+        titleNode.textContent = entry.domain;
+        stateNode.textContent =
+          `Φ${entry.phi} · ${entry.phi_band} · ${entry.momentum}`;
+        basisNode.textContent = explanationParts[0];
+        directionNode.textContent = explanationParts[1];
+        scopeLabelNode.textContent = publicScopeLabel;
+
+        dialog.dataset.domainIndex = String(entry.index);
+        dialog.dataset.registryScope = scope;
+        dialog.dataset.registryId = registry.registry_id;
+        currentSelection = selection;
+      }
+
+      closeButton.addEventListener('click', () => {
+        dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus({ preventScroll: true });
+      });
+
+      const positionTriggerAndDialog = () => {
+        positionPhiTrigger(trigger, icon);
+        positionPhiDialog(dialog);
+      };
+
+      positionTriggerAndDialog();
+
+      window.addEventListener('resize', positionTriggerAndDialog, {
+        passive: true,
+      });
+
+      surface.addEventListener(
+        'fieldframechange',
+        positionTriggerAndDialog
+      );
+
+      const openPhiSheet = () => {
+        if (dialog.open) {
+          return;
+        }
+
+        if (!currentSelection) {
+          fatal('FIELD_PHI_SHEET_SELECTION_NOT_RENDERED');
+        }
+
+        trigger.setAttribute('aria-expanded', 'true');
+        dialog.showModal();
+        positionPhiDialog(dialog);
+      };
+
+      trigger.addEventListener('click', openPhiSheet);
+
+      render(registryRuntime.selection);
+
+      if (new URLSearchParams(window.location.search).get('panel') === '1') {
+        openPhiSheet();
+      }
+
+      return Object.freeze({
+        render,
+      });
+    }
+
+    try {
+      const {
+        scopeRuntime,
+        taxonomyRuntime,
+      } = await loadRegistryRuntimes();
+
+      surface.dataset.registryScope = scopeRuntime.scope;
+      surface.dataset.registryId =
+        scopeRuntime.selection.registry.registry_id;
+      surface.dataset.domainIndex =
+        String(scopeRuntime.selection.entry.index);
+      surface.dataset.domainCount =
+        String(scopeRuntime.domains.length);
+
+      const response = await fetch(ASSET_URL, { cache: 'no-store' });
+      if (!response.ok) fatal(`AUTHORITY_FETCH_FAILED: ${response.status} ${ASSET_URL}`);
+
+      const source = new DOMParser().parseFromString(await response.text(), 'image/svg+xml');
+      const parserError = source.querySelector('parsererror');
+      if (parserError) fatal(`AUTHORITY_PARSE_FAILED: ${parserError.textContent}`);
+
+      const sourceSvg = source.documentElement;
+      const contract = {
+        viewBox: sourceSvg.getAttribute('viewBox'),
+        children: sourceSvg.children.length,
+        polygons: sourceSvg.querySelectorAll('polygon').length,
+        gradients: sourceSvg.querySelectorAll('linearGradient').length,
+        stops: sourceSvg.querySelectorAll('stop').length,
+      };
+      if (
+        contract.viewBox !== '0 0 390 844' ||
+        contract.children !== 38 ||
+        contract.polygons !== 52 ||
+        contract.gradients !== 7 ||
+        contract.stops !== 14
+      ) {
+        fatal(`AUTHORITY_CONTRACT_FAILED: ${JSON.stringify(contract)}`);
+      }
+
+      const authoritySvg = document.importNode(sourceSvg, true);
+      authoritySvg.classList.add('fm-content-authority');
+      authoritySvg.dataset.fieldContentAuthority = 'true';
+      authoritySvg.setAttribute('aria-hidden', 'true');
+      authoritySvg.setAttribute('focusable', 'false');
+      const nodeByAuthoredRoot =
+        applyAuthorityLayoutBands(authoritySvg);
+      surface.append(authoritySvg);
+
+      const { mountFieldInnerSlider } =
+        await import('./field-inner-slider.runtime.js');
+
+      const { createFieldInnerContentRenderer } =
+        await import('./field-inner-content.js');
+
+      const { mountFieldScopeSwitch } =
+        await import('./field-inner-scope-switch.js');
+
+      const { initializeCurrentFieldSheetTrial } =
+        await import('./field-inner-current-field-sheet.js');
+
+      const contentRenderer =
+        await createFieldInnerContentRenderer({
+          surface,
+          nodeByAuthoredRoot,
+        });
+
+      const phiSheetRenderer =
+        initializePhiSheet(scopeRuntime);
+
+      const currentFieldSheetRuntime =
+        initializeCurrentFieldSheetTrial({
+          registryRuntime: taxonomyRuntime,
+          surface,
+          nodeByAuthoredRoot,
+        });
+
+      function renderMainSelection(selection) {
+        contentRenderer.render(selection);
+        phiSheetRenderer.render(selection);
+
+        surface.dataset.registryScope =
+          scopeRuntime.scope;
+        surface.dataset.registryId =
+          selection.registry.registry_id;
+        surface.dataset.domainIndex =
+          String(selection.entry.index);
+
+        currentFieldSheetRuntime.setMainSelection(
+          taxonomyRuntime.select(selection.entry.index)
+        );
+      }
+
+      mountFieldInnerSlider({
+        surface,
+        registryRuntime: scopeRuntime,
+        nodeByAuthoredRoot,
+        initialIndex: INITIAL_DOMAIN_INDEX,
+        onSelectionChange(selection) {
+          renderMainSelection(selection);
+        },
+      });
+
+      await mountFieldScopeSwitch({
+        surface,
+        nodeByAuthoredRoot,
+        onScopeChange(nextScope) {
+          const previousScope = scopeRuntime.scope;
+
+          if (nextScope === previousScope) {
+            return scopeRuntime.selection;
+          }
+
+          try {
+            const nextSelection =
+              scopeRuntime.switchScope(nextScope);
+
+            renderMainSelection(nextSelection);
+            return nextSelection;
+          } catch (error) {
+            if (scopeRuntime.scope !== previousScope) {
+              const previousSelection =
+                scopeRuntime.switchScope(previousScope);
+
+              renderMainSelection(previousSelection);
+            }
+
+            throw error;
+          }
+        },
+      });
+
+      document.documentElement.dataset.previewStatus = 'ready';
+    } catch (error) {
+      if (document.documentElement.dataset.previewStatus !== 'error') {
+        fatal(`AUTHORITY_RUNTIME_FAILED: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  </script>
+</body>
+</html>

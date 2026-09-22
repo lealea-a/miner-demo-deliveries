@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "SourceHanSansCN-ExtraLight-GBpc-EUC-H";
+  src: url("./source-han-sans-cn-extra-light-250-site-v2.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SourceHanSansCN-Light-GBpc-EUC-H";
+  src: url("./source-han-sans-cn-light-300-site-v2.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SourceHanSansCN-Normal-GBpc-EUC-H";
+  src: url("./source-han-sans-cn-normal-350-site-v2.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 350;
+  font-display: swap;
+}

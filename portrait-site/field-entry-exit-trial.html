@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN" data-field-entry-cover-status="booting">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/field-miner-mobile-v01/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/field-miner-mobile-v01/icons/icon-192.png">
+    <style>
+      :root {
+        --field-safe-top: env(safe-area-inset-top, 0px);
+        --field-safe-right: env(safe-area-inset-right, 0px);
+        --field-safe-bottom: env(safe-area-inset-bottom, 0px);
+        --field-safe-left: env(safe-area-inset-left, 0px);
+      }
+    </style>
+    <script>
+      (() => {
+        const root = document.documentElement;
+        const logicalWidth = 390;
+        const logicalHeight = 844;
+
+        const applyBootFrame = () => {
+          const styles = getComputedStyle(root);
+          const readInset = (name) => {
+            const value = Number.parseFloat(styles.getPropertyValue(name));
+            return Number.isFinite(value) ? value : 0;
+          };
+          const viewport = window.visualViewport;
+          const viewportWidth = viewport?.width ?? window.innerWidth;
+          const viewportHeight = viewport?.height ?? window.innerHeight;
+          const usableWidth = Math.max(
+            1,
+            viewportWidth -
+              readInset('--field-safe-left') -
+              readInset('--field-safe-right'),
+          );
+          const usableHeight = Math.max(
+            1,
+            viewportHeight -
+              readInset('--field-safe-top') -
+              readInset('--field-safe-bottom'),
+          );
+          const scale = Math.min(
+            usableWidth / logicalWidth,
+            usableHeight / logicalHeight,
+          );
+          const left = Math.floor(
+            (usableWidth - logicalWidth * scale) / 2,
+          );
+          const top = Math.floor(
+            (usableHeight - logicalHeight * scale) / 2,
+          );
+
+          root.style.setProperty('--field-entry-boot-scale', String(scale));
+          root.style.setProperty('--field-entry-boot-left', `${left}px`);
+          root.style.setProperty('--field-entry-boot-top', `${top}px`);
+        };
+
+        const stopBootFrame = () => {
+          window.removeEventListener('resize', applyBootFrame);
+          window.visualViewport?.removeEventListener('resize', applyBootFrame);
+          observer.disconnect();
+        };
+
+        const observer = new MutationObserver(() => {
+          if (root.dataset.fieldEntryCoverStatus === 'ready') {
+            stopBootFrame();
+          }
+        });
+
+        applyBootFrame();
+        window.addEventListener('resize', applyBootFrame, { passive: true });
+        window.visualViewport?.addEventListener(
+          'resize',
+          applyBootFrame,
+          { passive: true },
+        );
+        observer.observe(root, {
+          attributes: true,
+          attributeFilter: ['data-field-entry-cover-status'],
+        });
+      })();
+    </script>
+    <link
+      rel="preload"
+      as="image"
+      href="./assets/field-entry-webgl-poster-s0-v01-1x.png"
+      imagesrcset="
+        ./assets/field-entry-webgl-poster-s0-v01-1x.png 1x,
+        ./assets/field-entry-webgl-poster-s0-v01-2x.png 2x
+      "
+      imagesizes="390px"
+    >
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="./fonts/site-v2/source-han-sans-cn-light-300-site-v2.woff2"
+      crossorigin
+    >
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="./fonts/site-v2/source-han-sans-cn-normal-350-site-v2.woff2"
+      crossorigin
+    >
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="./fonts/site-v2/source-han-sans-cn-medium-500-site-v2.woff2"
+      crossorigin
+    >
+    <link rel="icon" href="data:,">
+    <link
+      rel="stylesheet"
+      href="./fonts/site-v2/ekto-source-han-sans.css"
+    >
+    <link rel="stylesheet" href="./src/styles.css">
+    <link rel="stylesheet" href="./field-entry-same-document-handoff-v02.css">
+    <title>Field Miner Entry Exit Trial</title>
+  </head>
+  <body>
+    <div id="app" data-field-frame-host data-field-entry-handoff>
+      <section
+        data-field-entry-inner-host
+        aria-label="Field Miner Inner"
+        aria-hidden="true"
+        inert
+      >
+        <div data-field-entry-inner-stage>
+          <iframe
+            title="Field Miner Inner"
+            data-field-entry-inner-page
+            data-field-entry-plain-src="./field-inner-cover-preview.html"
+            data-field-entry-guide-src="./field-first-use-narrative-layout-trial-v01.html?sequence=1&amp;entry=1&amp;handoff=1"
+          ></iframe>
+        </div>
+      </section>
+
+      <section
+        data-field-entry-flight-host
+        aria-hidden="true"
+        inert
+      >
+        <div data-field-entry-flight-stage>
+          <img
+            data-field-entry-flight-shuttle
+            src="./assets/field-entry-flight-s16-rgba-v01-1x.png"
+            srcset="
+              ./assets/field-entry-flight-s16-rgba-v01-1x.png 624w,
+              ./assets/field-entry-flight-s16-rgba-v01-2x.png 1248w,
+              ./assets/field-entry-flight-s16-rgba-v01-2p5x.png 1560w
+            "
+            sizes="624px"
+            width="390"
+            height="844"
+            decoding="async"
+            draggable="false"
+            alt=""
+          >
+        </div>
+      </section>
+
+      <section
+        data-field-entry-cover-host
+        aria-label="Field Miner Entry"
+      >
+        <a
+          href="/field-miner-mobile-v01/field-inner-cover-preview.html"
+          aria-label="Enter Field Miner"
+          data-field-entry-exit-link
+          data-field-frame-stage
+        >
+          <div data-field-entry-motion-stage>
+            <img
+              data-field-entry-cover-poster
+              src="./assets/field-entry-webgl-poster-s0-v01-1x.png"
+              srcset="
+                ./assets/field-entry-webgl-poster-s0-v01-1x.png 1x,
+                ./assets/field-entry-webgl-poster-s0-v01-2x.png 2x
+              "
+              width="390"
+              height="844"
+              decoding="async"
+              fetchpriority="high"
+              draggable="false"
+              alt=""
+            >
+            <canvas id="matrix"></canvas>
+            <header class="field-entry-copy">
+              <p class="field-entry-kicker">FIELD MINER / ACTION SOLVER</p>
+              <h1>看穿正在发生的，<br>推动值得发生的。</h1>
+              <p class="field-entry-summary">一个关于“如何观察外部变化”的模拟世界。</p>
+            </header>
+            <span class="field-entry-enter" aria-hidden="true">
+              <span>ENTER</span>
+              <small>进入 FIELD MINER</small>
+            </span>
+            <span class="field-entry-gesture" aria-hidden="true">DRAG TO ROTATE</span>
+          </div>
+        </a>
+      </section>
+    </div>
+    <script type="module" src="./field-entry-runtime.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        const registerServiceWorker = () => {
+          navigator.serviceWorker.register('/field-miner-mobile-v01/sw.js', {
+            scope: '/field-miner-mobile-v01/',
+          }).catch((error) => console.error('Service Worker registration failed', error));
+        };
+
+        const registerAfterRuntimeReady = () => {
+          if (document.documentElement.dataset.fieldEntryHandoffStatus === 'error') {
+            return;
+          }
+          if (document.documentElement.dataset.fieldEntryHandoffStatus !== 'ready') {
+            window.setTimeout(registerAfterRuntimeReady, 100);
+            return;
+          }
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(registerServiceWorker, { timeout: 2_000 });
+          } else {
+            window.setTimeout(registerServiceWorker, 0);
+          }
+        };
+
+        window.addEventListener('load', registerAfterRuntimeReady, { once: true });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+.fm-scope-switch {
+  position: absolute;
+  z-index: 4;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+
+  width: max-content;
+  height: 32px;
+  margin: 0;
+  padding: 0 0 7px;
+
+  visibility: hidden;
+}
+
+.fm-scope-switch[hidden] {
+  display: none;
+}
+
+.fm-scope-option {
+  display: grid;
+  place-items: center;
+
+  min-width: 25px;
+  height: 25px;
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+  color: #9496a3;
+
+  font-family:
+    "SourceHanSansCN-Light-GBpc-EUC-H",
+    "Source Han Sans SC",
+    sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  font-synthesis: none;
+  line-height: 14px;
+  letter-spacing: 0.075em;
+  white-space: nowrap;
+
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
+  transition: color 140ms linear;
+}
+
+.fm-scope-option[aria-checked="true"] {
+  color: #f4f4f2;
+}
+
+.fm-scope-option:focus-visible {
+  outline: none;
+  color: #f4f4f2;
+  text-shadow: 0 0 4px rgb(244 244 242 / 42%);
+}
+
+.fm-scope-label {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.fm-scope-indicator {
+  position: absolute;
+  left: 0;
+  top: 25.25px;
+  bottom: auto;
+
+  width: 0;
+  height: 1px;
+
+  background: #BAF759;
+
+  will-change: transform;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fm-scope-option {
+    transition: none;
+  }
+}
