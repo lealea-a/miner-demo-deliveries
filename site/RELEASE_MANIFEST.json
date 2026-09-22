@@ -1,0 +1,89 @@
+{
+  "status": "FROZEN_LOCAL_AUDITED",
+  "real_safari_status": "UNVERIFIED_REAL_SAFARI",
+  "source_commit": "d801b3895b9aa4383e9a91dcd06771345639de0a",
+  "source_tree_git_oid": "69f17f55ee35ac39cb902f69fbcec70769382aa8",
+  "package_lock_sha256": "6C43B67800ABF63A4FCBEB884154417D79C4732F2711F0E62A989C4DC45B4F47",
+  "node_version": "v25.9.0",
+  "vite_version": "7.3.6",
+  "three_version": "0.184.0",
+  "build_command": "npm run build:public:bundle",
+  "entrypoint": "index.html",
+  "browser_runtime_files": [
+    {
+      "path": "assets/SourceSans3VF-Upright.otf-DRrN49PX.woff2",
+      "bytes": 164736,
+      "sha256": "F9E4EAC0E8F8FFDAE91CF6EFF3962B96E81417CBA5C728BC1C89EFE9510E7653"
+    },
+    {
+      "path": "assets/card-glow-large-COn4eQgi.png",
+      "bytes": 38258,
+      "sha256": "71BAD7A2F65036C705A6A5EF152E7D782CFE854B27109EF532AF0B5253A30CC0"
+    },
+    {
+      "path": "assets/card-glow-small-CgVXkewS.png",
+      "bytes": 29067,
+      "sha256": "FF669A5727F8A5CB5384F7FADD909EC2D2642C8774A36F3107FF37B653C264C4"
+    },
+    {
+      "path": "assets/disc-_1-OZO8K.png",
+      "bytes": 1399,
+      "sha256": "5429D0CE673FE08A0DC8BC852728EBD624BF8677650FA74F2C98C861E0DE3721"
+    },
+    {
+      "path": "assets/ekto-han-sans-extra-light-250-site-v2-DaJo1MVY.woff2",
+      "bytes": 339512,
+      "sha256": "050C54101AD90BEDA90219D100E7AE5DEFF18A6F8DE8FFD1B4BCE9715BB950A6"
+    },
+    {
+      "path": "assets/ekto-han-sans-light-300-site-v2-BsfzSAhH.woff2",
+      "bytes": 348748,
+      "sha256": "722059B9279E6FC55DE99670E0206F95CAE491668ABC7732CA177151C68EE225"
+    },
+    {
+      "path": "assets/ekto-han-sans-medium-500-site-v2-DZfkRClq.woff2",
+      "bytes": 351988,
+      "sha256": "4B94E041CB2DB47E6D45D9890717056127AFE6D42E027C61E3CBE04941BE186A"
+    },
+    {
+      "path": "assets/ekto-han-sans-normal-350-site-v2-BLnljWlq.woff2",
+      "bytes": 350780,
+      "sha256": "62F339D265844A106A6C64FADEC56D42FB2BBC22BA50602F6B0804ED0D5C8F71"
+    },
+    {
+      "path": "assets/favicon-Ckk9uVXJ.svg",
+      "bytes": 280,
+      "sha256": "C3F5FF7525F4DF3689384CCB733F801BA2F422900395000EA68793BD0FF9D2A4"
+    },
+    {
+      "path": "assets/frame1-tech-body-Dlc-6uNH.svg",
+      "bytes": 87710,
+      "sha256": "7F5CEB7941F8189E5480D614075A2124D4A846AD95CF0099C36014CD1588F6EB"
+    },
+    {
+      "path": "assets/index-CAQzIJWl.css",
+      "bytes": 27392,
+      "sha256": "9B37F0B612457FD99D6F616515759B4B40012D9FB81ECC6D9F6719173C0C773B"
+    },
+    {
+      "path": "assets/index-CXButnmA.js",
+      "bytes": 2401,
+      "sha256": "9C3DBFE4E4CFC03BDD08E0042F6343E2E1293A690AAB421DBB7D9984AD6EC18E"
+    },
+    {
+      "path": "assets/palette-CnUnWlrT.png",
+      "bytes": 83,
+      "sha256": "1BB933E0EB03599B13FDD3C45ED04220ED70CD8FEF3F7D7F5C02526FFFC4899E"
+    },
+    {
+      "path": "assets/runtime-DJWvZFE6.js",
+      "bytes": 1391311,
+      "sha256": "8D5CAB2E67131D8BB2BC6D7EC769507759D7997E10BFDB49EF78E91FC4EAA15B"
+    },
+    {
+      "path": "index.html",
+      "bytes": 977,
+      "sha256": "36F330D00869452807FFCB1BD060264A62E108F6D7FDEA229E87543C9C739A6F"
+    }
+  ]
+}

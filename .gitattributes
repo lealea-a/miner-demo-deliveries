@@ -1,0 +1,7 @@
+/.gitattributes text eol=lf
+*.zip binary
+/HANDOFF.md text eol=lf
+/README.md text eol=lf
+/tech-miner-web-v1.zip.sha256 text eol=lf
+ai-handoff/** text eol=lf
+site/** binary

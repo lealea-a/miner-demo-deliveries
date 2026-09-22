@@ -1,0 +1,42 @@
+{
+  "$schema": "./DEPLOYMENT-RESULT.schema.json",
+  "contractVersion": "1.0.0",
+  "handoffSha256": "79E6A64489BC2FA4E72D5745AC4D3CECE5D4573B1ACAD553816911EBC80688C3",
+  "status": "PENDING",
+  "operator": {
+    "kind": "AI_AGENT",
+    "name": null,
+    "toolVersion": null
+  },
+  "target": {
+    "provider": null,
+    "project": null,
+    "stagingBaseUrl": null,
+    "productionBaseUrl": null
+  },
+  "release": {
+    "id": "tech-miner-web-v1",
+    "archiveSha256": "9F0E67A7D24AE808B3AAFB9C66EAF3FDE9240DEFBF088419206679F883CA9D6C",
+    "deployedBaseUrl": null,
+    "preflightStatus": "PENDING",
+    "remoteBytesStatus": "PENDING",
+    "cspStatus": "PENDING",
+    "browserSmokeStatus": "PENDING",
+    "evidence": []
+  },
+  "failures": [],
+  "rollback": {
+    "required": null,
+    "performed": null,
+    "result": "PENDING",
+    "previousVersion": null
+  },
+  "attestation": {
+    "noRebuild": null,
+    "noByteMutation": null,
+    "atomicPromotion": null,
+    "exactCspApplied": null,
+    "exactStagingVersionPromoted": null
+  },
+  "notes": []
+}

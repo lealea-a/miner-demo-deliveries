@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "assetId": "tech-miner/runtime-font-distribution/source-han-sans-cn/site-v2",
+  "status": "RUNTIME_MOUNTED",
+  "sourceAuthority": {
+    "assetId": "ekto/site-fonts/source-han-sans-cn/site-v2",
+    "freezeSha256": "7F953A042D22262C01807434E86A0502DCB351725AC0AB669732C3F8807337CA",
+    "packageTreeSha256": "BBA9FD5554FF92A58EA6D6C60744371DBACC2E274906B53753346A5C920C1951",
+    "packageManifestSha256": "D38439FC0465D0B066276457F0E32F60AA1820A29E358923488AB23D35618A38"
+  },
+  "canonicalFamily": "EKTO Han Sans",
+  "weights": [
+    250,
+    300,
+    350,
+    500
+  ],
+  "selectedPackageFileCount": 8,
+  "excludedCompatibilityCss": [
+    "css/field-miner-compat.css",
+    "css/field-miner-review-compat.css"
+  ],
+  "owner": "TECH_MINER",
+  "runtimeEffect": "TECH_MINER_COMPONENT_FONT_RUNTIME",
+  "mountContract": {
+    "componentDefault": {
+      "cssImport": "src/assets/fonts/source-han-sans-cn/site-v2/css/ekto-han-sans.css?inline",
+      "styleOwner": "acquireTechMinerStyles",
+      "documentOwner": "container.ownerDocument",
+      "referenceCounting": "one style per ownerDocument; remove after final release"
+    },
+    "publicRelease": {
+      "cssImport": "public-entry/public-entry.css",
+      "styleMode": "external",
+      "delivery": "Vite content-hashed external CSS"
+    },
+    "consumers": [
+      "src/style.css",
+      "src/experience.css"
+    ]
+  },
+  "validityConditions": [
+    "Every renamed face matches the recorded pre-rename cmap, glyph order, outlines, metrics, unitsPerEm and usWeightClass invariants",
+    "Name IDs 1, 3, 4, 6, 16 and 21 do not use the reserved family name Source",
+    "Runtime mounting is owned by acquireTechMinerStyles per ownerDocument and removed after the final reference release"
+  ],
+  "forbiddenUsage": [
+    "Do not modify glyph outlines, cmap, metrics or weight classes while maintaining the renamed WOFF2 files",
+    "Do not use Field Miner compatibility family aliases",
+    "Do not claim runtime mounting unless the consumer contract loads weights 250, 300, 350 and 500 from this vendored distribution"
+  ]
+}
