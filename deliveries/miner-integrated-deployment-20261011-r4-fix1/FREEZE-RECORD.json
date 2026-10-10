@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "release": "miner-integrated-deployment-20261011-r4-fix1",
+  "status": "FROZEN_LOCAL_DEPLOYMENT_AND_ROLLBACK_ACCEPTED",
+  "readyForThirdPartyTrial": true,
+  "demoOnlineDeployment": false,
+  "gitTag": "miner-integrated-deployment-20261011-r4-fix1",
+  "artifact": {
+    "path": "deliveries/miner-integrated-deployment-20261011-r4-fix1/miner-integrated-deployment-20261011-r4-fix1.zip",
+    "sha256Path": "deliveries/miner-integrated-deployment-20261011-r4-fix1/miner-integrated-deployment-20261011-r4-fix1.zip.sha256",
+    "sha256": "3be385e0d9dc358e887617af6dde20caab82dea6ee4519dad83ec66f79d39492",
+    "bytes": 13963552,
+    "files": 282,
+    "siteFiles": 229,
+    "siteFilesUnchangedFromAcceptedR3": true,
+    "modifiedAfterReview": false
+  },
+  "independentReview": {
+    "reviewedAt": "2026-10-11",
+    "status": "PASS_LOCAL_DEPLOYMENT_AND_ROLLBACK_REVIEW",
+    "evidence": [
+      {
+        "file": "REVIEW.txt",
+        "sha256": "c741f246b16ad8152eed9c7f22c34d8b79b038d17f057f4294863769973befa4",
+        "availability": "Internal independent review evidence retained; digest referenced here, evidence files not published."
+      },
+      {
+        "file": "ACCEPTANCE.json",
+        "sha256": "13668668c91db17905d62ac25398a9cd9d8aae5601bcd845e05890982ad8619e",
+        "availability": "Internal independent review evidence retained; digest referenced here, evidence files not published."
+      }
+    ],
+    "closed": [
+      "R4-01: different legitimate A/B releases coexist with independent file records, file counts and Tech CSP"
+    ],
+    "observations": 33,
+    "observationCountIsNotAcceptanceTarget": true
+  },
+  "acceptedScope": [
+    "Independent extraction of 282 files and original package verifier",
+    "Real local Caddy 2.10.2 with legitimate different A229/B230 inputs, per-generation identity and CSP",
+    "Unapproved release and private record paths not publicly routed",
+    "A to B switch; invalid configuration rejected; successfully loaded bad business alias detected and explicitly restored to approved A+B with active A",
+    "Old Field/Tech tabs retain their release; Field service-worker scopes stay isolated",
+    "Windows built-in PowerShell File.Replace persistence with previous configuration backup, followed by managed Caddy process restart"
+  ],
+  "notAccepted": [
+    "Public HTTPS/DNS/CDN and remote cloud switching",
+    "Owner Windows service installation and startup configuration",
+    "Physical devices/Safari and final user visual acceptance",
+    "Existing fixed-path service workers and installed PWA migration",
+    "Full Runtime business review or fresh full interaction matrix"
+  ],
+  "cloudBase": "New version-path trial upload only; local Caddy acceptance does not establish CloudBase shielding, switching or rollback.",
+  "automaticBusinessRollback": false,
+  "packageStatusNote": "Pending/review labels inside the unchanged ZIP describe its packaging stage. Current accepted scope and limitations are governed by this external freeze record.",
+  "operatingInstructions": [
+    "GETTING-STARTED.md inside the extracted ZIP",
+    "UPDATE-ROLLBACK.md inside the extracted ZIP"
+  ],
+  "publicationBoundary": "Only the reviewed deployment ZIP and external release metadata are published. Optional maintenance source archives, construction/test workspaces, dependencies and browsers are not published."
+}
