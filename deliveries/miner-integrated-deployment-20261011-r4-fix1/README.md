@@ -6,6 +6,12 @@
 - [SHA256 文件](miner-integrated-deployment-20261011-r4-fix1.zip.sha256)
 - [当前冻结记录](FREEZE-RECORD.json)
 
+- [第三方交付主说明](THIRD-PARTY-HANDOFF.txt)：部署、更新、回退及实际异常。
+- [交付审核备注附件](DELIVERY-AUDIT-NOTES.txt)：审核范围和维护备注，不增加验收要求。
+- [第三方 AI 交接入口](AI-HANDOFF.md)：阅读顺序、冻结依据及包内操作入口。
+
+本次仅发布外层说明文档，冻结 ZIP、部署代码和 Runtime 未变；附件不构成新增工程或测试任务。
+
 ZIP 包含 282 个文件，Field 105 + Tech 124 = 229 个站点文件与已接受基线一致。未为更新状态重打包。ZIP 内 pending/review 文案是打包时阶段，当前状态与验收边界以本目录 FREEZE-RECORD.json 为准。
 
 接收后先核对 ZIP 的 SHA256：

@@ -1,0 +1,83 @@
+Field + Tech Demo 交付说明
+冻结版本：miner-integrated-deployment-20261011-r4-fix1｜2026-10-11
+
+交付内容：Field 竖版、横版及 Tech 的静态部署资源、安装核验工具和更新回退说明。已通过本地 Caddy 部署、真实不同版本切换和回退验证，可交第三方独立试部署。完整维护源码另存，不影响部署运行。
+
+一、获取冻结包
+
+下载：
+https://github.com/lealea-a/miner-demo-deliveries/raw/refs/tags/miner-integrated-deployment-20261011-r4-fix1/deliveries/miner-integrated-deployment-20261011-r4-fix1/miner-integrated-deployment-20261011-r4-fix1.zip
+
+冻结记录：
+https://github.com/lealea-a/miner-demo-deliveries/blob/main/deliveries/miner-integrated-deployment-20261011-r4-fix1/FREEZE-RECORD.json
+
+SHA256：
+3be385e0d9dc358e887617af6dde20caab82dea6ee4519dad83ec66f79d39492
+
+也可通过 Git 获取：
+git clone --branch main --single-branch https://github.com/lealea-a/miner-demo-deliveries.git
+cd miner-demo-deliveries
+git pull --ff-only origin main
+
+ZIP 位于 deliveries/miner-integrated-deployment-20261011-r4-fix1/。本次请使用上述冻结标签对应的包；pull 更新仓库不会自动更新正在运行的网站。
+
+二、首次部署（以下采用包内已验证的 Caddy 方案）
+
+准备与核验工作站：Windows 11 x64、Node.js 24.21.0 / npm 11.19.0；托管使用 Caddy 2.10.2，另行安装。静态站点运行不需要服务器安装 Node/npm。下面目录是可调整的示例，YOUR-DOMAIN 替换为实际域名。域名解析、HTTPS 和防火墙由部署方配置。每条命令必须成功后再继续。
+
+1. 核对 ZIP 摘要后解压，在解压根目录执行：
+   node verify-package.mjs
+   node deploy/release.mjs prepare C:/Miner/releases release-A
+   只发布工具生成的站点目录，不把整个交付包作为网站根目录。
+
+2. 在 C:/Miner/stage-A.json 保存以下内容：
+   {
+     "address": "YOUR-DOMAIN",
+     "admin": "127.0.0.1:2019",
+     "releaseRoot": "C:/Miner/releases",
+     "approved": ["release-A"],
+     "active": null
+   }
+   node deploy/release.mjs config C:/Miner/stage-A.json C:/Miner/stage-A.caddy
+   caddy validate --config C:/Miner/stage-A.caddy --adapter caddyfile
+   caddy run --config C:/Miner/stage-A.caddy --adapter caddyfile
+   保持该进程运行，在另一终端继续。此时开放版本测试地址，正式入口尚未开放。
+
+3. 在 demos/field、demos/tech 两个目录分别执行 npm.cmd run setup，并复制配置示例为实际配置：
+   Field：owner.config.example.json → owner.config.json；publicDomain 为 https://YOUR-DOMAIN，targetRoot 为 _releases/release-A/field，releaseId 为 release-A。
+   Tech：owner-config.example.json → owner-config.json；domain 为 https://YOUR-DOMAIN，deploymentPrefix 为 _releases/release-A/tech，releaseId 为 release-A，保留 outputDir。environmentId 是现有工具必填项；仅使用 Caddy 只读核验时可填 caddy-local，该值不创建云环境，也不用于云上传。
+   在两个目录分别执行 npm.cmd run deploy:verify，确认文件和实际浏览器流程正常。
+
+4. 复制 stage-A.json 为 live-A.json，将 active 改为 "release-A"，其他字段不变：
+   node deploy/release.mjs config C:/Miner/live-A.json C:/Miner/live-A.caddy
+   caddy validate --config C:/Miner/live-A.caddy --adapter caddyfile
+   caddy reload --address 127.0.0.1:2019 --config C:/Miner/live-A.caddy --adapter caddyfile
+   node deploy/release.mjs aliases https://YOUR-DOMAIN release-A
+   再执行两版 deploy:verify，并人工打开三个正式入口：
+   /demos/field/
+   /demos/field/field-miner-landscape-simple-guide-v01/
+   /demos/tech/
+
+5. 按包内 UPDATE-ROLLBACK.md 保存已接受配置到服务实际读取的 current.caddy，并验证受控重启后仍可访问。只执行 reload 不会自动更新下次启动的配置。需要开机自动运行时，由部署方配置服务并检查整机重启恢复。
+
+三、更新
+
+使用新的交付包和新的版本 ID，例如 release-B；不覆盖 release-A。用新包的 prepare 命令生成 B，保留 A 的站点及 .release-records 记录。
+先生成 approved=["release-A","release-B"]、active="release-A" 的配置，validate/reload 后保存为 previous.caddy；这样旧入口仍指向 A，B 可以单独测试。
+将两个 Demo 核验配置中的 releaseId 和版本路径改为 B，分别执行 deploy:verify。确认后生成 active="release-B" 的配置，validate/reload，再执行 aliases https://YOUR-DOMAIN release-B 和两版 deploy:verify。
+通过后保存实际启动配置并验证重启。保留 A；已经打开的 A 页面继续使用 A。
+
+四、回退
+
+回退是部署人员显式操作，不承诺业务异常自动回退。确认 A 文件及两个 A 版本流程正常后，将配置设为 approved=["release-A","release-B"]、active="release-A"，validate/reload，再检查 aliases 和两版 A 的 deploy:verify。
+切到 B 后若业务检查失败，直接 validate/reload 已保存的 previous.caddy，恢复两个 Demo 的 A 核验配置并检查 A。恢复通过后，同样保存启动配置并验证重启。
+保留 B 的版本路径，让已打开的 B 页面可以继续使用；不删除文件或强制清浏览器缓存。配置保存、原子替换和失败恢复的具体步骤见包内 UPDATE-ROLLBACK.md。
+
+五、需要知悉的实际观察与条件
+
+• Field 横版：桌面 Safari 18.4 的两次远端会话有鼠标点击 ENTER 无响应记录；键盘、改点文字区及后续操作曾成功。尚未确定是页面原因还是远端输入传递问题，后续成功不代表该异常已修复。
+• Tech：iOS Safari 有一次点击空白处未关闭卡片的记录，原因未确认；箭头关闭已验证可用。Tech 桌面 Safari 已执行流程未发现确认的业务故障，未完成的覆盖项见附件。
+• 如已有旧固定地址或已安装 PWA 用户，先保留旧 URL；迁移另行处理，不直接删旧站点或清缓存。首次全新部署不涉及该项。
+• CloudBase 工具仅用于新版本路径试传，可能需要人工登录；不提供上述 Caddy 入口切换和回退流程。采用本文 Caddy 方案无需云登录或云上传。
+
+本包当前状态以公开冻结记录为准。附件 DELIVERY-AUDIT-NOTES.txt 保存测试覆盖、日志限制和维护债务，供需要时查阅，不增加部署步骤或验收体系。
