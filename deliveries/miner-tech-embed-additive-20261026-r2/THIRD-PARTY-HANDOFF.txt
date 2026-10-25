@@ -1,0 +1,50 @@
+r2部署工具修正版｜Coordinator独立复验通过
+仅deploy/verify-embed.mjs及派生FILES.sha256改变，406文件总数不变。122子站与273旧Demo文件逐字节不变；应用release ID仍release-tech-embed-20261026-r1。r2不是新Demo，不覆盖r1 ZIP或其SHA。包内旧版本/制作状态文字保留为历史快照，以本外层说明为当前状态。
+核验器禁止文件与missing请求任何重定向，记录requestedUrl/actualUrl/location；MIME分号前完整值精确比较，JS接受text/javascript与application/javascript。HTTP通过不代签真实iframe或手机。
+临时默认域公网路线已取消，不恢复。本包只供原正式Tech部署通路。
+
+Tech 专用 iframe 增量交付｜2026-10-26
+状态：r2已由Coordinator从ZIP独立解压复验，406文件完整，七组正常与反例结果符合预期。本目录随Git提交交付；服务器尚未部署，Git拉取不等于网站更新。
+
+本地ZIP绝对路径：
+C:\Users\sdxl\Documents\project-006website\.git-worktrees\miner-demo-deliveries-public-main\deliveries\miner-tech-embed-additive-20261026-r2\miner-tech-embed-additive-20261026-r2.zip
+GitHub下载URL（核对下列SHA，不能仅凭分支名确认身份）：
+https://github.com/lealea-a/miner-demo-deliveries/raw/refs/heads/main/deliveries/miner-tech-embed-additive-20261026-r2/miner-tech-embed-additive-20261026-r2.zip
+
+包：miner-tech-embed-additive-20261026-r2.zip
+SHA256：ea2269bd1e74ab3db4821008dbd63e9486df70ba7e7adc459953309606b9cf0a
+大小：16063536 bytes。406文件已实际解压校验。
+
+只新增专用入口：
+https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/embed.html
+这是待部署目标，不是已上线链接。
+
+原Field/Tech目录273文件（站点229文件）原字节保留。保留旧release、旧Tech首页/Field首页、旧CSP及旧alias；active保持现场原值（本地演练release-A），不切新版本。不得整包覆盖站点根目录。
+
+第三方操作（取得此新增交付后，沿现有服务器发布通路执行）
+现场约束：Tech/Field当前由openresty响应，新专用入口当前404。C:/Miner/releases只是示例，未确认服务器实际路径，必须沿现场releaseRoot。不得把生成的整份Caddy配置盲目覆盖现网：生成器还含全站no-store/MIME/alias规则。只有现场已使用此Caddy流程且确认保留全部现有配置时才执行下列config/reload；spec所有原值保持，仅append approved，逐项审查输出不得改变原路由、全站header或default。若openresty直接服务且无Caddy，不安装或启动新Caddy；由部署方在原服务仅增加新版本目录映射及该路径CSP，沿原服务配置验证/加载方式执行。共享影响仅新路由和新路径CSP。
+1. 核SHA、解压；先读包内EMBED-UPDATE.md，不照历史GETTING-STARTED旧步骤切active。
+2. 在解压根运行，目录沿用现场实际值：
+   node verify-package.mjs
+   node deploy/release.mjs prepare C:/Miner/releases release-tech-embed-20261026-r1
+   node deploy/release.mjs verify C:/Miner/releases release-tech-embed-20261026-r1
+3. 仅在现场原本使用包内Caddy生成器、且确认生成结果不会丢失现场配置时：先备份实际Web配置，再复制现有生成器的JSON spec为C:/Miner/embed-stage.json，仅在approved追加新release。address/admin/releaseRoot/active保持原值。不得把Caddyfile或OpenResty配置文件直接更名为JSON；现场没有该生成器spec时，不执行以下config/reload示例，沿原服务只追加新入口。
+   node deploy/release.mjs config C:/Miner/embed-stage.json C:/Miner/embed-stage.caddy
+   caddy validate --config C:/Miner/embed-stage.caddy --adapter caddyfile
+   caddy reload --address 127.0.0.1:2019 --config C:/Miner/embed-stage.caddy --adapter caddyfile
+   现场admin不同则沿用原地址。按原UPDATE-ROLLBACK.md保存启动配置，不能只reload。现网openresty与Caddy之间的实际转发由部署方确认并沿既有通路挂载此新路径，不新增替代平台、不改全站响应头。
+4. 新路径必须保留包内专用CSP，无阻止该iframe的X-Frame-Options。允许父origin仅为：
+   http://127.0.0.1:4542
+   http://127.0.0.1:4544
+   https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com
+   必须同时匹配bridge和CSP，不放通配。旧首页策略不放宽。
+5. 实际部署成功后运行并保存输出：
+   node deploy/verify-embed.mjs https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/ > embed-http-public.json
+   检查进程退出码为0。此命令核字节/MIME/CSP/404，不代替iframe交互验收。
+6. 回传实际URL、embed-http-public.json、实际加载配置/版本与原active值、旧Tech/Field原地址前后HTTP状态及响应SHA不变的核验结果。Coordinator保留COORDINATOR-PUBLIC-BEFORE.json作为发布前对照；部署方也保存现场执行前后的状态/字节证据。入口直接打开会拒绝缺少父会话，这是预期；不要改bridge使它直接可交互。
+
+回退：恢复备份配置并validate/reload，确认旧alias仍原active；保留新旧release目录。无需覆盖旧包或删除旧站点。
+
+本地已验证prepare/config/HTTP/回退、bridge协议及真实iframe技术链路。旧Windows WebKit2311存在已由原生WebGL对照复现的resize呈现工具缺陷，不据此判退产品，不要求部署方修浏览器或给Runtime加补丁。ZIP内较早的WebKit待验描述保留为历史记录；当前裁定为继续隔离公网/iPhone验收，不把旧Windows截图通过当部署前置。未做iPhone/公网验收，不签手机PASS。
+
+子公网URL核验通过后，Worker才切隔离父页URL、复验并沿既有独立H5路径发布，随后真实iPhone检查转屏恢复/返回/重入。当前父仍接本地子，不能宣称已接公网。
