@@ -1,0 +1,44 @@
+Tech 专用 iframe 增量交付｜2026-10-26
+状态：已获本批GitHub交付授权；服务器尚需部署方操作。Git pull不会自动更新网站。
+
+本地ZIP绝对路径：
+C:\Users\sdxl\Documents\project-006website\.git-worktrees\miner-demo-deliveries-public-main\deliveries\miner-tech-embed-additive-20261026-r1\miner-tech-embed-additive-20261026-r1.zip
+GitHub下载URL（核对下列SHA，不能仅凭分支名确认身份）：
+https://github.com/lealea-a/miner-demo-deliveries/raw/refs/heads/main/deliveries/miner-tech-embed-additive-20261026-r1/miner-tech-embed-additive-20261026-r1.zip
+
+包：miner-tech-embed-additive-20261026-r1.zip
+SHA256：07ec36b5ac3ca134035632018ac15a831fb866bc71c984587e5c6355e857daff
+大小：16063321 bytes。406文件已实际解压校验。
+
+只新增专用入口：
+https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/embed.html
+这是待部署目标，不是已上线链接。
+
+原Field/Tech目录273文件（站点229文件）原字节保留。保留旧release、旧Tech首页/Field首页、旧CSP及旧alias；active保持现场原值（本地演练release-A），不切新版本。不得整包覆盖站点根目录。
+
+第三方操作（取得此新增交付后，沿现有服务器发布通路执行）
+1. 核SHA、解压；先读包内EMBED-UPDATE.md，不照历史GETTING-STARTED旧步骤切active。
+2. 在解压根运行，目录沿用现场实际值：
+   node verify-package.mjs
+   node deploy/release.mjs prepare C:/Miner/releases release-tech-embed-20261026-r1
+   node deploy/release.mjs verify C:/Miner/releases release-tech-embed-20261026-r1
+3. 备份当前配置，复制为C:/Miner/embed-stage.json，仅在approved追加新release。address/admin/releaseRoot/active保持原值。
+   node deploy/release.mjs config C:/Miner/embed-stage.json C:/Miner/embed-stage.caddy
+   caddy validate --config C:/Miner/embed-stage.caddy --adapter caddyfile
+   caddy reload --address 127.0.0.1:2019 --config C:/Miner/embed-stage.caddy --adapter caddyfile
+   现场admin不同则沿用原地址。按原UPDATE-ROLLBACK.md保存启动配置，不能只reload。现网openresty与Caddy之间的实际转发由部署方确认并沿既有通路挂载此新路径，不新增替代平台、不改全站响应头。
+4. 新路径必须保留包内专用CSP，无阻止该iframe的X-Frame-Options。允许父origin仅为：
+   http://127.0.0.1:4542
+   http://127.0.0.1:4544
+   https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com
+   必须同时匹配bridge和CSP，不放通配。旧首页策略不放宽。
+5. 实际部署成功后运行并保存输出：
+   node deploy/verify-embed.mjs https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/ > embed-http-public.json
+   检查进程退出码为0。此命令核字节/MIME/CSP/404，不代替iframe交互验收。
+6. 回传实际URL、embed-http-public.json、实际加载配置/版本与原active值、旧Tech/Field原地址不变的核验结果。入口直接打开会拒绝缺少父会话，这是预期；不要改bridge使它直接可交互。
+
+回退：恢复备份配置并validate/reload，确认旧alias仍原active；保留新旧release目录。无需覆盖旧包或删除旧站点。
+
+本地已验证prepare/config/HTTP/回退、bridge协议及真实iframe技术链路。旧Windows WebKit2311存在已由原生WebGL对照复现的resize呈现工具缺陷，不据此判退产品，不要求部署方修浏览器或给Runtime加补丁。ZIP内较早的WebKit待验描述保留为历史记录；当前裁定为继续隔离公网/iPhone验收，不把旧Windows截图通过当部署前置。未做iPhone/公网验收，不签手机PASS。
+
+子公网URL核验通过后，Worker才切隔离父页URL、复验并沿既有独立H5路径发布，随后真实iPhone检查转屏恢复/返回/重入。当前父仍接本地子，不能宣称已接公网。
