@@ -1,0 +1,90 @@
+交付对象：Field横版隔离部署包（仅本地，Coordinator业务与HTTP独验已过；最终文档身份待确认）
+ZIP绝对路径：C:\Users\sdxl\Documents\project-006website\outputs\demo-integration-research-20261025\field-step3\deployment-r1\miner-field-embed-additive-20261026-r1.zip
+大小：22136960 bytes
+SHA256：eb47c1393abc27c2a0756ae60ec840767f538ce8e7864ce1a755f32c7db91d93
+包内文件：467；prepare后的站点树411文件
+源基线：bf15eb4ddbbea29e2fdc09049f001ae26fff334f4c885c0e70ef8312d2ee118c
+派生sourceDigest：f4f2c599a85988fbc2cfe416c0b99a35aa3eef17c0ecc1fc2a77559d6ee80853
+专用build：field-h5-public-r1-bf15eb4d-v2
+原父c64affd…与原子bf15… Live保持，未Git写入/提交/push，未远程部署。
+先读ZIP根README及FIELD-DEPLOYMENT.txt；下方是该部署说明的原文副本。最终独验结果由Coordinator补充，不把本地结果签为线上。
+
+FIELD部署交付入口（2026-10-26）
+
+本文件覆盖包内较早README/GETTING-STARTED/UPDATE-ROLLBACK的激活建议。本次只准备新增不可变版本路径；禁止切active、修改默认alias、覆盖旧Field/Tech或用生成器整份配置替换现网。当前未部署；先由Coordinator独审。工具config生成整份Caddy配置，只供隔离本地演练。
+
+目标（待部署）：
+https://field.ektopod.cn/_releases/release-field-embed-20261026-r1/field-embed/embed-v2.html
+H5接入合同：kind Field，version 2，build field-h5-public-r1-bf15eb4d-v2；由原host附加parent_origin/session/build，不把裸URL顶层打开当嵌入验收。原H5不在本包，未改URL或构建。
+允许桥父来源只有：http://127.0.0.1:4542、http://127.0.0.1:4544、https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com。
+CSP中另有self用于Field自身嵌套祖先；self不是新增桥父来源。所有新路径资源（特别是5份HTML）均须响应以下唯一CSP：
+frame-ancestors 'self' http://127.0.0.1:4542 http://127.0.0.1:4544 https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com; frame-src 'self'
+新路径无X-Frame-Options；不通过meta设置frame-ancestors。嵌套祖先每层都须允许。
+
+身份：VERSION-INDEX.json保留field/tech/techEmbed条目，新增fieldEmbed。基线bf15eb4d，派生f4f2c599a85988fbc2cfe416c0b99a35aa3eef17c0ecc1fc2a77559d6ee80853。FILES.sha256约束整个包。仅横版在demos/field-embed/site；旧Field/Tech273文件、Tech embed122文件保持。
+
+准备与本地版本校验（以下POSIX shell示例，由部署方在获准环境自行执行；我们未远程执行）：
+cd /absolute/path/to/extracted/package
+node verify-package.mjs
+export DEPLOY_ROOT='/absolute/approved/release-parent'
+node deploy/release.mjs prepare "$DEPLOY_ROOT" release-field-embed-20261026-r1
+node deploy/release.mjs verify "$DEPLOY_ROOT" release-field-embed-20261026-r1
+prepare只创建新目录和.release-records记录，存在同名即拒绝，不复用残留目录，不切任何active。物理目录为：
+${DEPLOY_ROOT}/release-field-embed-20261026-r1/field-embed/
+整个新release还保留旧demo副本，但本次只映射field-embed精确前缀，不暴露/切换旧路径。
+
+OpenResty现有server中追加片段（将__DEPLOY_ROOT__替换为实际绝对父目录，不能把文字占位符上线）：
+location ^~ /_releases/release-field-embed-20261026-r1/field-embed/ {
+    alias __DEPLOY_ROOT__/release-field-embed-20261026-r1/field-embed/;
+    types {
+        text/html html;
+        text/javascript js;
+        text/css css;
+        application/json json;
+        image/png png;
+        image/svg+xml svg;
+        font/woff2 woff2;
+        text/plain txt sha256;
+    }
+    default_type application/octet-stream;
+    add_header Content-Security-Policy "frame-ancestors 'self' http://127.0.0.1:4542 http://127.0.0.1:4544 https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com; frame-src 'self'" always;
+    add_header Cache-Control "no-store" always;
+    error_page 404 =404 @field_embed_r1_missing;
+}
+location @field_embed_r1_missing { return 404; }
+静态alias直接映射文件，无SPA fallback，无重定向。不要加proxy_hide_header冒充清除静态add_header。常见nginx继承规则是本location出现add_header后不再继承上级add_header：部署方必须逐项把现场仍必要的安全/业务头保留在此location，同时排除本新路径冲突XFO/重复CSP。不要假定现场有新版本add_header_inherit。若额外CDN/代理仍加头，需由部署方解释并限定本前缀修正，不能全server清头。error_page也限新location，404不回退旧首页。若现场有更高优先级重写、鉴权、缓存，应先核其对新前缀影响，不猜配置。
+
+Caddy现服务内追加片段（不是整份Caddyfile；先排除已有catch-all先接走本路径，并审查外层header继承）：
+handle_path /_releases/release-field-embed-20261026-r1/field-embed/* {
+    root * __DEPLOY_ROOT__/release-field-embed-20261026-r1/field-embed
+    header {
+        -X-Frame-Options
+        Content-Security-Policy "frame-ancestors 'self' http://127.0.0.1:4542 http://127.0.0.1:4544 https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com; frame-src 'self'"
+        Cache-Control "no-store"
+    }
+    file_server
+}
+仅本handle处理头；若其它外层/代理继续追加冲突CSP/XFO，先由部署方定位该层并仅对本前缀处理。绝不能把deploy/release.mjs config产出的全站配置覆盖现网。路径末尾/文件URL按合同精确使用；不依赖302重定向。
+
+部署前保存原配置副本并做现有服务器的语法校验；追加后仍先语法校验，再按现场批准方式reload。这里不编造服务名、配置绝对路径、旧active id或重载命令。任何共享server/CDN/父H5 frame-src调整须先列出具体位置和影响，经确认再做；旧响应头不得放宽。父frame-src若阻止field.ektopod.cn，则属于另行确认的父部署事项，本包不自动处理。
+
+新站完整HTTP核验（不替代浏览器/真机）：
+node deploy/verify-embed.mjs 'https://field.ektopod.cn/_releases/release-field-embed-20261026-r1/field-embed/' field > field-http-after.json
+旧Tech命令仍兼容：node deploy/verify-embed.mjs 'https://ACTUAL_TECH_ORIGIN/ACTUAL_TECH_RELEASE/tech-embed/'
+校验逐文件200、完整SHA、精确模块MIME、最终URL无变化且不跟跳转、唯一精确CSP、无XFO、缺失资源404。不能以HTML fallback或302算成功。
+
+旧站前后对比：部署方把实际旧Field首页、Tech首页、所有默认alias URL放入old-urls.json（JSON字符串数组，不猜release/alias）；前后用同一份URL和以下命令，分别输出before.json / after.json：
+node --input-type=module -e 'import fs from "node:fs";import{createHash}from "node:crypto";const rows=[];for(const url of JSON.parse(fs.readFileSync("old-urls.json"))){const r=await fetch(url,{redirect:"manual"});const b=Buffer.from(await r.arrayBuffer());rows.push({url,status:r.status,location:r.headers.get("location"),contentType:r.headers.get("content-type"),cacheControl:r.headers.get("cache-control"),contentSecurityPolicy:r.headers.get("content-security-policy"),xFrameOptions:r.headers.get("x-frame-options"),sha256:createHash("sha256").update(b).digest("hex")});}console.log(JSON.stringify(rows,null,2));' > before.json
+部署后同命令将输出改after.json，然后：
+node --input-type=module -e 'import fs from "node:fs";import assert from "node:assert/strict";assert.deepEqual(JSON.parse(fs.readFileSync("after.json")),JSON.parse(fs.readFileSync("before.json")));console.log("OLD_URLS_UNCHANGED");'
+有动态/时间戳差异时保留原响应并定位，不把不一致写成通过。原active指针也由部署方保存部署前后值；本次没有任何切换命令。
+
+回退：撤销这一个新location/handle及对应新路径专用头，恢复部署前保存的原配置；用现场同一语法校验和批准reload方式生效，重跑旧URL前后比对。不要删旧release、不要改active、不要覆盖旧站目录。不调用rm -rf或猜旧版本id。新release可保留为未映射版本；若想清理另行授权。回退配置操作仅部署方获准执行。
+
+官方语义参考（Coordinator已核）：
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options
+https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header
+https://nginx.org/en/docs/http/ngx_http_core_module.html#alias
+
+验收边界：本地技术/包身份和浏览器接口证据见外层RESULT。公网尚未部署；真实手机、公网顺畅和用户目测仍待验。不要索取或在包内存放密码、私钥、账号凭据。

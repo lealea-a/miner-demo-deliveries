@@ -1,0 +1,43 @@
+2026-10-26 Field横版隔离部署包 — Coordinator独立审核通过
+
+裁定：本地交付准备完成，可供用户审核。未推GitHub、未Git提交、未部署；本审核不授权自动发布。Worker外层文档中制作时“待Coordinator独审”字样由本记录更新；ZIP中历史制作状态保留，不把本地检查当作公网/手机通过。
+
+最终ZIP（不是review1/review2）
+C:\Users\sdxl\Documents\project-006website\outputs\demo-integration-research-20261025\field-step3\deployment-r1\miner-field-embed-additive-20261026-r1.zip
+SHA256 eb47c1393abc27c2a0756ae60ec840767f538ce8e7864ce1a755f32c7db91d93
+22,136,960 bytes，467文件；新Field横版站点60文件；prepare站点树411文件。
+操作说明：同目录THIRD-PARTY-HANDOFF.txt；ZIP根README首先指向FIELD-DEPLOYMENT.txt。包及外层校验SHA256SUMS均实核一致。
+
+待部署专用入口
+https://field.ektopod.cn/_releases/release-field-embed-20261026-r1/field-embed/embed-v2.html
+物理目录：${DEPLOY_ROOT}/release-field-embed-20261026-r1/field-embed/，DEPLOY_ROOT必须由原部署方按现场现有通路填写。不是原Field首页，不切默认alias/active，不覆盖旧release。
+H5未来接入合同：kind Field，protocol version2，build field-h5-public-r1-bf15eb4d-v2；原host附加parent_origin/session/build。裸URL直接打开拒绝缺父会话是预期；本轮原H5产品和Live未改公网地址。
+
+嵌套策略
+真实路径：H5→Field embed→首次guide→inner，plain少一层。桥父白名单严格限定http://127.0.0.1:4542、http://127.0.0.1:4544、https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com。
+所有新Field版本路径响应的HTTP CSP：frame-ancestors 'self' [以上三父来源]; frame-src 'self'。self允许Field内部所有祖先，不加入桥的H5父白名单；不放通配，不靠meta。新路径不应带冲突XFO/重复CSP。实际Chromium缺self反例被浏览器阻断，正确策略下guide/inner加载和运行通过。
+官方语义已核：https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors ，每一祖先均检查；https://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header ，location新增header会影响继承，不能猜现场版本支持新继承指令。
+
+共享配置边界
+仅追加该精确版本路径。OpenResty/Caddy片段写在交接说明；deploy/release.mjs config生成整份配置，仅供本地隔离演练，不准覆盖现网。
+若现场server/CDN/代理层仍追加XFO/CSP或父H5 frame-src阻止Field，部署方需先说明具体层和影响，仅对本新路径作处理；旧站头不放宽，不在本批自动修改共享配置。alias目录、服务名、旧active、reload方式仍按现场真实值，文档不编造。原站前后命令同时比较status/location/SHA/contentType/cacheControl/CSP/XFO。
+
+独立执行证据（independent/FINAL-SUMMARY.json）
+1 从最终ZIP另目录独立解压467条，逐条哈希对照并实际运行包内verify-package：PASS467。旧Field/Tech273条及已审Tech嵌入122条原字节不变。旧三个VERSION对象不变。新横版源140条仅bridge两常量变化；父1868、原子253(含dist)、Tech已审包406基线开工前后全文件SHA一致。
+2 实际运行包内prepare/verify，在本地建立旧release-A与新Field release，411站点文件核验、已有目标拒绝；旧352项和模拟active文件未变。此为本地演练，不冒称已知现网active。
+3 复用核验器实际跑Field12组：正常/两合法JS类型变体通过，跨源/同源/缺失跳转、错误MIME/SHA/CSP/缺self/XFO/缺资产HTML fallback均拒绝，未跟跳转。旧Tech默认命令另3组正常及反例保持，122文件消费无变化。
+4 用从ZIP解压的真实站点在完整/_releases/.../field-embed/前缀本地HTTP提供响应头，独立测试context仅替换原c64已生成bundle的FieldURL/build，不写原H5。Chromium/WebKit各跑真实完整H5：fresh guide、横竖暂停恢复、原操作、一次返回正文、plain重入、再次返回；新context中先设置实际业务素材中断并断言实际请求命中，错误上达、停止活动、一次返回且pageerror为空。另Chromium缺self实际阻断后仍能取消返回。PACK-RUNTIME.json五组均过；这是完整H5测试fixture，不是正式H5接公网或实体手机通过。
+5 原站前后命令直接从最终部署说明提取执行：相同内容/相同头通过；正文SHA相同但CSP/XFO改变时原deepEqual明确失败。OLD-HEADER-COMMANDS.json，避免只看正文误签原站正常。
+6 查看两引擎实际操作截图。最终相对已审bdd81包仅FIELD-DEPLOYMENT.txt与FILES变化；此前站点/可执行工具的HTTP及浏览器证据适用且已逐项证明字节相同，未重复重建产品。
+
+已纠正并留证
+首包README误导旧Tech入口，最终在顶部加Field当前入口优先；第二处文档补全原站头对照。两个旧ZIP及身份保留用于审计，不交部署方使用。Worker首浏览器业务失败注入安装过晚未造成实际失败而超时，保留其原脚本/输出；前置同一中断且计实际命中后过，未改产品或放宽超时。
+
+部署方获后续授权时的主要核验命令（本轮未执行远程）
+node verify-package.mjs
+node deploy/release.mjs prepare "$DEPLOY_ROOT" release-field-embed-20261026-r1
+node deploy/release.mjs verify "$DEPLOY_ROOT" release-field-embed-20261026-r1
+node deploy/verify-embed.mjs 'https://field.ektopod.cn/_releases/release-field-embed-20261026-r1/field-embed/' field > field-http-after.json
+旧站前后完整命令、追加头、语法校验/reload现场要求和回退在THIRD-PARTY-HANDOFF.txt。回退只撤新路径映射/恢复原配置并校验reload，保留新旧目录、不改active、不删旧站。
+
+剩余验收：实际服务器配置和公网依赖响应、真实公网H5 iframe进退及手机顺畅均待部署后验证。现有本地Live仍c64/4554，不把这次制包冒称公网已接入。
