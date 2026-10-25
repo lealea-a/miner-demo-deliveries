@@ -17,6 +17,7 @@ https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/embe
 原Field/Tech目录273文件（站点229文件）原字节保留。保留旧release、旧Tech首页/Field首页、旧CSP及旧alias；active保持现场原值（本地演练release-A），不切新版本。不得整包覆盖站点根目录。
 
 第三方操作（取得此新增交付后，沿现有服务器发布通路执行）
+现场约束：Tech/Field当前由openresty响应，新专用入口当前404。C:/Miner/releases只是示例，未确认服务器实际路径，必须沿现场releaseRoot。不得把生成的整份Caddy配置盲目覆盖现网：生成器还含全站no-store/MIME/alias规则。只有现场已使用此Caddy流程且确认保留全部现有配置时才执行下列config/reload；spec所有原值保持，仅append approved，逐项审查输出不得改变原路由、全站header或default。若openresty直接服务且无Caddy，不安装或启动新Caddy；由部署方在原服务仅增加新版本目录映射及该路径CSP，沿原服务配置验证/加载方式执行。共享影响仅新路由和新路径CSP。
 1. 核SHA、解压；先读包内EMBED-UPDATE.md，不照历史GETTING-STARTED旧步骤切active。
 2. 在解压根运行，目录沿用现场实际值：
    node verify-package.mjs
@@ -35,7 +36,7 @@ https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/embe
 5. 实际部署成功后运行并保存输出：
    node deploy/verify-embed.mjs https://tech.ektopod.cn/_releases/release-tech-embed-20261026-r1/tech-embed/ > embed-http-public.json
    检查进程退出码为0。此命令核字节/MIME/CSP/404，不代替iframe交互验收。
-6. 回传实际URL、embed-http-public.json、实际加载配置/版本与原active值、旧Tech/Field原地址不变的核验结果。入口直接打开会拒绝缺少父会话，这是预期；不要改bridge使它直接可交互。
+6. 回传实际URL、embed-http-public.json、实际加载配置/版本与原active值、旧Tech/Field原地址前后HTTP状态及响应SHA不变的核验结果。Coordinator保留COORDINATOR-PUBLIC-BEFORE.json作为发布前对照；部署方也保存现场执行前后的状态/字节证据。入口直接打开会拒绝缺少父会话，这是预期；不要改bridge使它直接可交互。
 
 回退：恢复备份配置并validate/reload，确认旧alias仍原active；保留新旧release目录。无需覆盖旧包或删除旧站点。
 
