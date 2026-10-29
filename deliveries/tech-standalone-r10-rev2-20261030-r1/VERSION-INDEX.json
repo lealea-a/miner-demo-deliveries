@@ -1,0 +1,17 @@
+{
+  "deliveryId": "tech-standalone-r10-rev2-20261030-r1",
+  "assembledAt": "2026-10-30",
+  "productVersion": "Tech R10 rev2",
+  "productRebuilt": false,
+  "originalIntegratedArchive": "miner-integrated-deployment-20261011-r4-fix1.zip",
+  "originalIntegratedSha256": "3be385e0d9dc358e887617af6dde20caab82dea6ee4519dad83ec66f79d39492",
+  "originalIntegratedGitTag": "miner-integrated-deployment-20261011-r4-fix1",
+  "extractedPrefix": "demos/tech/site/",
+  "siteFiles": 124,
+  "siteFilesListSha256": "64a6bc4c98b2127b37dc503bddbbf681319f485837247a5f85f20afa356fb1e3",
+  "existingStandaloneUrl": "https://tech.ektopod.cn/",
+  "scope": "Original frozen standalone site bytes repackaged separately; no source or product changes",
+  "liveFilesReauditedByThisPublication": false,
+  "cloudChanged": false,
+  "mobileH5Changed": false
+}

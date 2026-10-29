@@ -1,0 +1,22 @@
+{
+  "frozenAt": "2026-10-11",
+  "scope": "LOCAL_DELIVERY_AND_MAINTENANCE_TECHNICAL_CLOSURE",
+  "ownerArchive": "artifacts/tech-owner-r10-rev2-20261011/deliverables/tech-owner-r10-rev2-review-20261011.zip",
+  "ownerSha256": "756f54b9c83ea8468c82394fc072a3ae3bd7cb1abac1027a0e1ed1142bbdf5a1",
+  "maintenanceArchive": "artifacts/tech-owner-r10-rev2-20261011/deliverables/tech-r10-rev2-engineering.zip",
+  "maintenanceSha256": "cf66b02747bd05b1b91fac22e9423712bdd23c7271d4cfe7844ab30eaaaff3dc",
+  "siteFilesListSha256": "64a6bc4c98b2127b37dc503bddbbf681319f485837247a5f85f20afa356fb1e3",
+  "approvedByIndependentReview": ".inspection/tech-owner-rev1-release-review-20261011/ACCEPTANCE.json",
+  "acceptanceSha256": "60efbb081e76232f55b5a05fee42355093cd308d1261d9635c7936209a17b0a0",
+  "reviewSha256": "856745e6006da8e89b675a0db70c5296f5af3937bde3e322ec7d591309f0198c",
+  "originalArchiveModified": false,
+  "integratedPackageApproval": "PENDING_SEPARATE_REVIEW",
+  "open": [
+    "Accepted braces-chain maintenance debt4",
+    "Authentication P2",
+    "Original product coverage/device/Safari gaps",
+    "Current public HTTPS/CSP/cloud upload/manual rollback",
+    "Linux and new-machine verification",
+    "Final user visual acceptance"
+  ]
+}

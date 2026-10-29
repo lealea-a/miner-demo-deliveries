@@ -1,0 +1,39 @@
+{
+  "deliveryId": "field-standalone-complete-20261029-r1",
+  "assembledAt": "2026-10-29",
+  "kind": "ACCEPTED_STANDALONE_COMPOSITE_NO_REBUILD",
+  "productRebuilt": false,
+  "publishedByThisAssembly": false,
+  "mobileH5Changed": false,
+  "webEmbedImplemented": false,
+  "variants": [
+    {
+      "variant": "landscape",
+      "releaseId": "release-field-perf-r1-71fc214d0b3b7f2e",
+      "sourceDigest": "71fc214d0b3b7f2e5e9129a5e36be87cc22f6d11fb1d8a54bb05cdd1204c7801",
+      "acceptedTag": "field-standalone-accepted-20261029-r1",
+      "acceptedCommit": "3bbc41958a766a9736278d0ce74531e06bbb131f",
+      "publicPath": "_releases/release-field-perf-r1-71fc214d0b3b7f2e/field/field-miner-landscape-simple-guide-v01",
+      "entry": "index.html",
+      "siteFiles": 49,
+      "maintenanceSourceFiles": 155,
+      "liveUrl": "https://demo.ektopod.cn/_releases/release-field-perf-r1-71fc214d0b3b7f2e/field/field-miner-landscape-simple-guide-v01/",
+      "cachePolicy": "CACHE-POLICY.json",
+      "historicalInternalStatusPreserved": true
+    },
+    {
+      "variant": "portrait",
+      "releaseId": "release-field-perf-r1-7bfce3562a547405",
+      "sourceDigest": "7bfce3562a5474055077b7981384941b6467c15844db21f7b0496033c3b10f78",
+      "acceptedTag": "field-portrait-ruler-accepted-20261029-r1",
+      "acceptedCommit": "7a4388284d82803b12adebb4d948edee428e2b7c",
+      "publicPath": "_releases/release-field-perf-r1-7bfce3562a547405/field/field-miner-mobile-v01",
+      "entry": "index.html",
+      "siteFiles": 50,
+      "maintenanceSourceFiles": 155,
+      "liveUrl": "https://demo.ektopod.cn/_releases/release-field-perf-r1-7bfce3562a547405/field/field-miner-mobile-v01/",
+      "cachePolicy": "CACHE-POLICY.json",
+      "historicalInternalStatusPreserved": true
+    }
+  ]
+}
