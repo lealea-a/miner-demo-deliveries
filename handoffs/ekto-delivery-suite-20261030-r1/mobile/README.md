@@ -6,7 +6,7 @@
 
 SHA256：`1b619ddef6b59f66145381d04df9d7dfe0557eda0032ca9ed852ec463b9112e1`
 
-核对后解压，阅读包内README.md、AI-HANDOFF.md；先按README配置，再从解压根执行：
+手机ZIP含顶层 `package/`。核对后解压，先进入 `package/`，阅读其中README.md、AI-HANDOFF.md；按README建立my-deployment.json，再在该目录执行：
 
 ```sh
 node tools/prepare.mjs --config my-deployment.json --out ../deployed-mobile
