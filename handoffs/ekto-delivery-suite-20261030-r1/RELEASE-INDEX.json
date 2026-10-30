@@ -1,0 +1,151 @@
+{
+  "collection": "ekto-delivery-suite-20261030-r1",
+  "repository": "lealea-a/miner-demo-deliveries",
+  "assembledAt": "2026-10-30",
+  "purpose": "Four delivery packages; Field/Tech lightweight complete candidates with unchanged accepted runtime, Web/mobile original frozen r2 ZIPs",
+  "assets": [
+    {
+      "unit": "standalone",
+      "product": "Field",
+      "version": "field-standalone-owner-complete-20261030-r1",
+      "name": "field-standalone-owner-complete-20261030-r1.zip",
+      "sha256": "6c8c0ddcf8c9551e9b9766890901a943d2d70dd2c7419d869961499a6f7cdd97",
+      "bytes": 2176002,
+      "url": "https://github.com/lealea-a/miner-demo-deliveries/releases/download/ekto-delivery-suite-20261030-r1/field-standalone-owner-complete-20261030-r1.zip",
+      "status": "REVIEWED_PUBLIC_DISTRIBUTION_AUTHORIZED"
+    },
+    {
+      "unit": "standalone",
+      "product": "Tech",
+      "version": "tech-standalone-owner-complete-20261030-r1",
+      "name": "tech-standalone-owner-complete-20261030-r1.zip",
+      "sha256": "fe4ef159a8ef8c7b67708029264eb041fad06908116fe6b5a4f47489ba2f4d41",
+      "bytes": 2117597,
+      "url": "https://github.com/lealea-a/miner-demo-deliveries/releases/download/ekto-delivery-suite-20261030-r1/tech-standalone-owner-complete-20261030-r1.zip",
+      "status": "REVIEWED_PUBLIC_DISTRIBUTION_AUTHORIZED"
+    },
+    {
+      "unit": "mobile-h5",
+      "product": "Mobile H5",
+      "version": "mobile-runtime-wechat-loading-20261030-r2",
+      "name": "mobile-runtime-wechat-loading-complete-deployment-r2.zip",
+      "sha256": "1b619ddef6b59f66145381d04df9d7dfe0557eda0032ca9ed852ec463b9112e1",
+      "bytes": 315150410,
+      "url": "https://github.com/lealea-a/miner-demo-deliveries/releases/download/ekto-delivery-suite-20261030-r1/mobile-runtime-wechat-loading-complete-deployment-r2.zip",
+      "status": "REVIEWED_PUBLIC_DISTRIBUTION_AUTHORIZED"
+    },
+    {
+      "unit": "web-h5",
+      "product": "Web H5",
+      "version": "web-runtime-c6ac3932-delivery-20261030-r2",
+      "name": "web-runtime-c6ac3932-complete-deployment-r2.zip",
+      "sha256": "46b4ab58af86f74dbcb96716e8d39fae1e1261857c9143832bd3371917a6ccfc",
+      "bytes": 203735815,
+      "url": "https://github.com/lealea-a/miner-demo-deliveries/releases/download/ekto-delivery-suite-20261030-r1/web-runtime-c6ac3932-complete-deployment-r2.zip",
+      "status": "REVIEWED_PUBLIC_DISTRIBUTION_AUTHORIZED"
+    }
+  ],
+  "units": {
+    "standalone": {
+      "field": {
+        "variants": [
+          {
+            "variant": "landscape",
+            "releaseId": "release-field-perf-r1-71fc214d0b3b7f2e",
+            "sourceDigest": "71fc214d0b3b7f2e5e9129a5e36be87cc22f6d11fb1d8a54bb05cdd1204c7801",
+            "acceptedTag": "field-standalone-accepted-20261029-r1",
+            "acceptedCommit": "3bbc41958a766a9736278d0ce74531e06bbb131f",
+            "publicPath": "_releases/release-field-perf-r1-71fc214d0b3b7f2e/field/field-miner-landscape-simple-guide-v01",
+            "entry": "index.html",
+            "siteFiles": 49,
+            "maintenanceSourceFiles": 155,
+            "liveUrl": "https://demo.ektopod.cn/_releases/release-field-perf-r1-71fc214d0b3b7f2e/field/field-miner-landscape-simple-guide-v01/",
+            "cachePolicy": "CACHE-POLICY.json",
+            "historicalInternalStatusPreserved": true
+          },
+          {
+            "variant": "portrait",
+            "releaseId": "release-field-perf-r1-7bfce3562a547405",
+            "sourceDigest": "7bfce3562a5474055077b7981384941b6467c15844db21f7b0496033c3b10f78",
+            "acceptedTag": "field-portrait-ruler-accepted-20261029-r1",
+            "acceptedCommit": "7a4388284d82803b12adebb4d948edee428e2b7c",
+            "publicPath": "_releases/release-field-perf-r1-7bfce3562a547405/field/field-miner-mobile-v01",
+            "entry": "index.html",
+            "siteFiles": 50,
+            "maintenanceSourceFiles": 155,
+            "liveUrl": "https://demo.ektopod.cn/_releases/release-field-perf-r1-7bfce3562a547405/field/field-miner-mobile-v01/",
+            "cachePolicy": "CACHE-POLICY.json",
+            "historicalInternalStatusPreserved": true
+          }
+        ],
+        "delivery": "field-standalone-owner-complete-20261030-r1"
+      },
+      "tech": {
+        "productVersion": "Tech R10 rev2",
+        "sourceArchive": "miner-integrated-deployment-20261011-r4-fix1.zip",
+        "sourceArchiveSHA256": "3be385e0d9dc358e887617af6dde20caab82dea6ee4519dad83ec66f79d39492",
+        "siteFiles": 124,
+        "delivery": "tech-standalone-owner-complete-20261030-r1"
+      },
+      "note": "Field landscape 71fc and portrait 7bfc; Tech original R10 rev2. Neither is interchangeable with an H5 embedded child. New wrappers provide automatic prepare/verify and Caddy configuration; migration from native r4 uses a separate root, not record conversion."
+    },
+    "mobileH5": {
+      "delivery": "mobile-runtime-wechat-loading-20261030-r2",
+      "current": {
+        "tag": "ekto-mobile-short-wechat-loading-20261030",
+        "commit": "ca921ad2a2fce37ddba72c504461bd0456f3d3d7",
+        "releaseId": "sha256-cf4ac9e9b18d72473c82593f337b3484b45dc9c51d344f8165bc3b1daa105536",
+        "candidate": "short-wechat-tap-a6930e2bdb83"
+      },
+      "rollback": {
+        "tag": "ekto-mobile-short-tech-entry-b-20261030",
+        "commit": "aac770628883d3bb0323750e604a86d963a7459d",
+        "releaseId": "sha256-ec91822b85167a54f6d988995a90e6559dd8e4b9af8c9d0b4fc6cabd441b0905"
+      },
+      "sourceBindings": {
+        "parentCurrent": "https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com/mobile-short-wechat-loading-135d2b59-20261030/?candidate=short-wechat-tap-a6930e2bdb83",
+        "parentRollback": "https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com/mobile-short-tech-entry-b-a0ebbecb-20261030/?candidate=short-tech-entry-b-f983ecb9ea4a",
+        "techURL": "https://demo.ektopod.cn/_releases/release-tech-entry-b-a78b4e4f-20261030-r1/tech-embed/embed.html",
+        "techBUILD": "tech-h5-entry-b-r1-v1",
+        "fieldURL": "https://demo.ektopod.cn/_releases/release-field-entry-chain-d6e9d561-20261030-r1/field-embed/embed-v2.html",
+        "fieldBUILD": "field-h5-entry-chain-r1-v1"
+      },
+      "prepareCommand": "node tools/prepare.mjs --config my-deployment.json --out ../deployed-mobile",
+      "automaticallyVerifies": true
+    },
+    "webH5": {
+      "delivery": "c6ac3932-delivery-r2",
+      "productTag": "web-runtime-c6ac3932-20261030",
+      "productCommit": "c7afd48ffc382139f4318a2d676b676760f79765",
+      "bindings": {
+        "releaseId": "sha256-c6ac393210533e11e2be508717e2f18b00ddf833b7caf8f092a6f1eff26b2258",
+        "gitCommit": "c7afd48ffc382139f4318a2d676b676760f79765",
+        "gitTag": "web-runtime-c6ac3932-20261030",
+        "parentOrigin": "https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com",
+        "demoOrigin": "https://demo.ektopod.cn",
+        "techBase": "https://demo.ektopod.cn/_releases/release-miner-readable-first-frame-20261028-r1/tech-embed/",
+        "techBuild": "tech-h5-first-frame-r1-v2",
+        "current": {
+          "parentBase": "https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com/web-landscape-demo-test-20261030-c6ac3932/",
+          "fieldBase": "https://demo.ektopod.cn/_releases/release-web-miner-d5b89c7650481e81/field-embed/",
+          "fieldBuild": "field-web-71fc-prewarm-r3",
+          "releaseId": "sha256-c6ac393210533e11e2be508717e2f18b00ddf833b7caf8f092a6f1eff26b2258"
+        },
+        "previous": {
+          "parentBase": "https://ekto-pod-d4gvyzlwhb97709b9-1472892036.tcloudbaseapp.com/web-landscape-demo-test-20261030-0ef96638/",
+          "fieldBase": "https://demo.ektopod.cn/_releases/release-web-miner-5ed2115c9df31c3e/field-embed/",
+          "fieldBuild": "field-web-71fc-prewarm-r3",
+          "releaseId": "sha256-0ef966387304892403f74a28db2a25b6cb804e082611c6ee579a6c66b832b18c"
+        }
+      },
+      "prepareCommand": "node tools/prepare.mjs --config my-deployment.json --out ../restored-web",
+      "automaticallyVerifies": true
+    }
+  },
+  "maintenanceArchivesIncluded": false,
+  "productionActivationIncluded": false,
+  "status": "PUBLIC_DISTRIBUTION_AUTHORIZED_20261030",
+  "handoffDirectory": "handoffs/ekto-delivery-suite-20261030-r1",
+  "release": "https://github.com/lealea-a/miner-demo-deliveries/releases/tag/ekto-delivery-suite-20261030-r1",
+  "publicationNote": "User explicitly authorized public distribution of these four deployment archives on 2026-10-30. Historical candidate/local-only wording inside unchanged ZIPs describes packaging stage; this outer handoff records current distribution authority. No Runtime or production-site changes."
+}

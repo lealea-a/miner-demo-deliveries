@@ -1,6 +1,10 @@
 # Miner Demo Deliveries
 
-## 当前交付：Field + Tech 总部署包 r4-fix1
+## 最新四包交接（2026-10-30）
+
+[独立交接目录](handoffs/ekto-delivery-suite-20261030-r1/README.md)：Field、Tech、手机H5、WebH5四份完整部署ZIP及接手说明；ZIP由同仓Release附件提供，clone/pull获取索引。以下原交付记录继续保留。
+
+## 历史交付：Field + Tech 总部署包 r4-fix1
 
 **本地部署/回退技术验收通过，可交第三方试部署；Demo 尚未线上部署。**
 
@@ -36,4 +40,4 @@ git pull --ff-only origin main
 - [Tech Miner Web v1 分支](https://github.com/lealea-a/miner-demo-deliveries/tree/codex/tech-miner-web-v1-delivery)
 - [Field Miner Web v1 分支](https://github.com/lealea-a/miner-demo-deliveries/tree/codex/field-miner-web-v1-delivery)
 
-旧分支、标签及原交付保留；新使用者请从上方总部署包开始。
+旧分支、标签及原交付保留；新使用者请从上方最新四包交接目录开始。
